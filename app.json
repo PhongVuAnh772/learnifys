@@ -1,0 +1,85 @@
+{
+  "expo": {
+    "jsEngine": "hermes",
+    "name": "Learnifys",
+    "slug": "Learnifys",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/learnify.png",
+    "scheme": "learnifys.learn.app",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/learnify.png"
+    },
+    "ios": {
+      "jsEngine": "jsc",
+      "supportsTablet": true,
+      "bundleIdentifier": "learnifys.learn.app",
+      "googleServicesFile": "./firebase/GoogleService-Info.plist",
+      "bitcode": false,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use FaceID"
+      }
+    },
+    "android": {
+      "package": "learnifys.learn.app",
+      "jsEngine": "jsc",
+      "versionCode": 1,
+      "googleServicesFile": "./firebase/google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/learnify.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/learnify.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-calendar",
+      "@react-native-firebase/app",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      "expo-secure-store"],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0d2e8b8a-f365-46be-bf0f-175ed0cd3362"
+      }
+    }
+  }
+}
