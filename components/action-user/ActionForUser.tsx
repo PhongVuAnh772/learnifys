@@ -15,11 +15,12 @@ import { useLoadingOverlay } from "../loading/LoadingOverlay";
 import loginSticker from "@/assets/stickers/loading.png";
 import { useNavigation } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/auth/ctx";
 
 const ActionForUser = () => {
   const dispatch = useAppDispatch();
   const { show, hide } = useLoadingOverlay();
-   
+  const {signOut} = useAuth()
   const navigation = useNavigation();
   const handleLogout = async () => {
     show("logout-loading-title", "logout-loading-description", loginSticker);
@@ -33,14 +34,7 @@ const ActionForUser = () => {
       console.error("Logout failed:", error);
     } finally {
       hide();
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: "(modals)/login",
-          } as any,
-        ],
-      });
+      signOut?.(); 
     }
   };
 

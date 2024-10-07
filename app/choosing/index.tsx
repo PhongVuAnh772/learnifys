@@ -18,38 +18,30 @@ interface Props {
   counting: number;
 }
 
-const ChoosingAgency: React.FC<Props> = ({ name, counting }) => { 
-  const { data, saveData, loadingStorage, error } = useAsyncStorage("agency");
+const ChoosingAgency: React.FC<Props> = ({ name, counting }) => {
+  const { data, saveData, loadingStorage, error } = useAsyncStorage("role");
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([
+    { label: i18n.t("student"), value: "student", key: "student" },
+    { label: i18n.t("admin"), value: "admin", key: "admin" },
+    { label: i18n.t("parent"), value: "parent", key: "parent" },
+    { label: i18n.t("teacher"), value: "teacher", key: "teacher" },
+  ]);
   const [loading, setLoading] = useState(false);
-  const handleEnterPress = async () => {
-    
-  };
+  const handleEnterPress = async () => {};
 
   const handleContinue = () => {
+    console.log(value)
     saveData({ value: JSON.stringify(value) });
     router.push("login");
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchSystem();
-      const formattedData = data.map((item: any, index: number) => ({
-        label: item.system_name,
-        value: item.id
-      }));
-      setItems(formattedData);
-    };
-    fetchData();
-  }, []);
-
   return (
     <Greeting
-      title="phoenix-tech"
+      title="learnifys"
       description="greeting-choosing"
       overlayDescription="invite-choosing"
     >

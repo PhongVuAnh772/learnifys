@@ -122,11 +122,36 @@ function RootLayoutNav() {
 
   return (
     <Stack initialRouteName="(modals)/loading">
-      <Stack.Screen
+       <Stack.Screen
         name="(modals)/loading"
         options={{
           title: i18n.t("login-title"),
           headerShown: false,
+          animation:'none'
+        }}
+      />
+       <Stack.Screen
+        name="(parents)/(tabs)"
+        options={{
+          title: i18n.t("login-title"),
+          headerShown: false,
+          animation:'none'
+        }}
+      />
+       <Stack.Screen
+        name="(teacher)/(tabs)"
+        options={{
+          title: i18n.t("login-title"),
+          headerShown: false,
+          animation:'none'
+        }}
+      />
+      <Stack.Screen
+        name="(student)/(tabs)"
+        options={{
+          title: i18n.t("login-title"),
+          headerShown: false,
+          animation:'none'
         }}
       />
       <Stack.Screen
@@ -140,9 +165,9 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(modals)/login"
         options={{
-          animation: "slide_from_bottom",
           title: i18n.t("login-title"),
           headerShown: false,
+          animation:'none'
         }}
       />
       <Stack.Screen
@@ -152,7 +177,7 @@ function RootLayoutNav() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(admin)/(tabs)" options={{ headerShown: false,animation:'none' }} />
       <Stack.Screen
         name="(modals)/information"
         options={{
@@ -460,8 +485,8 @@ function RootLayoutNav() {
       <Stack.Screen
         name="choosing/index"
         options={{
-          presentation: "transparentModal",
           headerShown: false,
+          animation:'slide_from_left'
         }}
       />
       <Stack.Screen

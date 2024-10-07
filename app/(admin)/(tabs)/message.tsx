@@ -33,7 +33,7 @@ import {
   RTCView,
   mediaDevices,
 } from "react-native-webrtc";
-import { styles } from "../calling/styles";
+import { styles } from "../../calling/styles";
 
 const { width, height } = Dimensions.get("screen");
 const database = firestore();

@@ -41,25 +41,23 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const signOut = async () => {
-  try {
-    await supabase.auth.signOut();
-    setUser(null);
-    setSession(null);
-    router.replace("/(modals)/login");
-  } catch (error) {
-    console.error("Error signing out:", error);
-  }
-};
-
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      router.replace("/(modals)/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   useEffect(() => {
     if (session) {
-      router.replace("/(tabs)");
+      router.replace("(student)/(tabs)" as any);
     } else {
       router.replace("/(modals)/login");
     }
-          SplashScreen.hideAsync();
-
+    SplashScreen.hideAsync();
   }, [session, user]);
 
   const value = {

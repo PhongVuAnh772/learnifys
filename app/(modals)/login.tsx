@@ -67,6 +67,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
     performOAuthWithGoogle,
     signInWithFacebook,
     signUpWithCommonAuth,
+    handlePositionNavigate
   } = useAuthViewModel(
     show,
     hide,
@@ -115,7 +116,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
       <View
         style={{
           position: "absolute",
-          bottom: 10,
+          bottom: 25,
           left: 10,
           width: "95%",
           height: "32%",
@@ -131,11 +132,27 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             backgroundColor: "#D80100",
             width: "95%",
             alignSelf: "center",
+                        marginBottom: 10
+
           }}
           mode="contained"
           onPress={signUpWithCommonAuth}
         >
           {i18n.t("continue")}
+        </PrimaryButton>
+        <PrimaryButton
+          style={{
+            height: 54,
+            borderRadius: 1000,
+            alignItems: "center",
+            justifyContent: "center",
+            width: "95%",
+            alignSelf: "center",
+          }}
+          mode="outlined"
+          onPress={handlePositionNavigate}
+        >
+          {i18n.t("edit-position")}
         </PrimaryButton>
         <View
           style={[
@@ -188,6 +205,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             backgroundColor: "#F1F3F4",
             width: "95%",
             alignSelf: "center",
+
           }}
           mode="contained"
           onPress={() => router.push("(modals)/register" as any)}

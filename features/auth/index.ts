@@ -60,6 +60,10 @@ export const useAuthViewModel = (
     return data.session;
   };
 
+  const handlePositionNavigate = () => {
+    router.navigate('choosing')
+  }
+
   async function signUpWithCommonAuth() {
     const { data, error } = await supabase.auth.signUp({
       email: "vuanhphong1701@email.com",
@@ -146,5 +150,6 @@ export const useAuthViewModel = (
     performOAuthWithGoogle,
     signInWithFacebook,
     signUpWithCommonAuth,
+    handlePositionNavigate
   };
 };
