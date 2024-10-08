@@ -39,7 +39,7 @@ const Layout = () => {
       <Tabs.Screen
         name="explore"
         options={{
-          tabBarLabel: i18n.t("study-and-work"),
+          tabBarLabel: i18n.t("manage-student"),
           tabBarIcon: ({ size, color, focused }) => (
             <OrderIcon size={size} color={color} focused={focused} />
           ),

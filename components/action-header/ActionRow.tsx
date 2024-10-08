@@ -7,9 +7,11 @@ import listIcon from "@/assets/icons/list.png";
 import i18n from "@/translations";
 import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { storage } from "@/mmkv";
 
 const ActionRow = () => {
-   
+  const role = storage.getString("role");
+
   return (
     <View style={styles.container}>
       <Link href="category" asChild>
@@ -18,16 +20,46 @@ const ActionRow = () => {
           <Text style={styles.description}>{i18n.t("list")}</Text>
         </Pressable>
       </Link>
-      <Link href="downline" asChild>
-        <Pressable style={styles.actionRow}>
-          <Image source={downlineIcon} style={styles.icon} />
-          <Text style={styles.description}>{i18n.t("downline")}</Text>
-        </Pressable>
-      </Link>
+
+      {role === "admin" && (
+        <Link href="downline" asChild>
+          <Pressable style={styles.actionRow}>
+            <Image source={downlineIcon} style={styles.icon} />
+            <Text style={styles.description}>{i18n.t("manage")}</Text>
+          </Pressable>
+        </Link>
+      )}
+      {role === "parent" && (
+        <Link href="downline" asChild>
+          <Pressable style={styles.actionRow}>
+            <Image source={downlineIcon} style={styles.icon} />
+            <Text style={styles.description}>{i18n.t("for_children")}</Text>
+          </Pressable>
+        </Link>
+      )}
+
+      {role === "student" && (
+        <Link href="downline" asChild>
+          <Pressable style={styles.actionRow}>
+            <Image source={downlineIcon} style={styles.icon} />
+            <Text style={styles.description}>{i18n.t("library")}</Text>
+          </Pressable>
+        </Link>
+      )}
+
+      {role === "teacher" && (
+        <Link href="downline" asChild>
+          <Pressable style={styles.actionRow}>
+            <Image source={downlineIcon} style={styles.icon} />
+            <Text style={styles.description}>{i18n.t("score")}</Text>
+          </Pressable>
+        </Link>
+      )}
+
       <Link href="campaign" asChild>
         <Pressable style={styles.actionRow}>
           <Image source={campaignIcon} style={styles.icon} />
-          <Text style={styles.description}>{i18n.t("campaign")}</Text>
+          <Text style={styles.description}>{i18n.t("news")}</Text>
         </Pressable>
       </Link>
       <Link href="training" asChild>

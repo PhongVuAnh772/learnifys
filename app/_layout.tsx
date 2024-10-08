@@ -40,14 +40,15 @@ if (
 
 Notifications.setNotificationHandler({
   handleNotification: async (notification: any) => {
-    console.log(notification)
-    const isManualAndroidNotification = Platform.OS === 'android' && !notification.request.trigger;
-    if (Platform.OS === 'android' && notification.request.trigger) {
-      const appNotification = notification.request.trigger['remoteMessage'].notification;
+    const isManualAndroidNotification =
+      Platform.OS === "android" && !notification.request.trigger;
+    if (Platform.OS === "android" && notification.request.trigger) {
+      const appNotification =
+        notification.request.trigger["remoteMessage"].notification;
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: appNotification?.title || '',
-          body: appNotification?.body || '',
+          title: appNotification?.title || "",
+          body: appNotification?.body || "",
           sound: true,
         },
         trigger: null,
@@ -55,8 +56,8 @@ Notifications.setNotificationHandler({
     }
 
     return {
-      shouldShowAlert: Platform.OS === 'ios' || isManualAndroidNotification,
-      shouldPlaySound: Platform.OS === 'ios' || isManualAndroidNotification,
+      shouldShowAlert: Platform.OS === "ios" || isManualAndroidNotification,
+      shouldPlaySound: Platform.OS === "ios" || isManualAndroidNotification,
       shouldSetBadge: false,
     };
   },
@@ -73,7 +74,7 @@ export default function RootLayout() {
     "manrope-bold": require("../assets/fonts/Manrope-Bold.ttf"),
     "manrope-medium": require("../assets/fonts/Manrope-Medium.ttf"),
   });
-  
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -93,23 +94,23 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <NotificationProvider>
-          <AuthProvider>
-            <RootSiblingParent>
-              <LoadingOverlayProvider>
-                <LoadingContentProvider>
-                  <ToastProvider>
-                    {Platform.OS === "ios" && (
-                      <StatusBar barStyle="light-content" />
-                    )}
-                    {Platform.OS === "android" && (
-                      <StatusBar barStyle="light-content" />
-                    )}
-                    <RootLayoutNav />
-                  </ToastProvider>
-                </LoadingContentProvider>
-              </LoadingOverlayProvider>
-            </RootSiblingParent>
-          </AuthProvider>
+            <AuthProvider>
+              <RootSiblingParent>
+                <LoadingOverlayProvider>
+                  <LoadingContentProvider>
+                    <ToastProvider>
+                      {Platform.OS === "ios" && (
+                        <StatusBar barStyle="light-content" />
+                      )}
+                      {Platform.OS === "android" && (
+                        <StatusBar barStyle="light-content" />
+                      )}
+                      <RootLayoutNav />
+                    </ToastProvider>
+                  </LoadingContentProvider>
+                </LoadingOverlayProvider>
+              </RootSiblingParent>
+            </AuthProvider>
           </NotificationProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
@@ -122,36 +123,36 @@ function RootLayoutNav() {
 
   return (
     <Stack initialRouteName="(modals)/loading">
-       <Stack.Screen
+      <Stack.Screen
         name="(modals)/loading"
         options={{
           title: i18n.t("login-title"),
+          animation: "none",
           headerShown: false,
-          animation:'none'
         }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="(parents)/(tabs)"
         options={{
           title: i18n.t("login-title"),
+          animation: "none",
           headerShown: false,
-          animation:'none'
         }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="(teacher)/(tabs)"
         options={{
           title: i18n.t("login-title"),
+          animation: "none",
           headerShown: false,
-          animation:'none'
         }}
       />
       <Stack.Screen
         name="(student)/(tabs)"
         options={{
           title: i18n.t("login-title"),
+          animation: "none",
           headerShown: false,
-          animation:'none'
         }}
       />
       <Stack.Screen
@@ -167,7 +168,7 @@ function RootLayoutNav() {
         options={{
           title: i18n.t("login-title"),
           headerShown: false,
-          animation:'none'
+          animation: "none",
         }}
       />
       <Stack.Screen
@@ -177,7 +178,10 @@ function RootLayoutNav() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="(admin)/(tabs)" options={{ headerShown: false,animation:'none' }} />
+      <Stack.Screen
+        name="(admin)/(tabs)"
+        options={{ headerShown: false, animation: "none" }}
+      />
       <Stack.Screen
         name="(modals)/information"
         options={{
@@ -486,7 +490,7 @@ function RootLayoutNav() {
         name="choosing/index"
         options={{
           headerShown: false,
-          animation:'slide_from_left'
+          animation: "slide_from_left",
         }}
       />
       <Stack.Screen

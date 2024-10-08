@@ -42,7 +42,6 @@ const ExploreHeader: React.FC<Props> = ({ avatar_url, name, counting }) => {
       return i18n.t('good-evening');
     }
   },[]);
-  console.log(getCurrentGreeting())
   return (
     <ImageBackground
       style={styles.container}

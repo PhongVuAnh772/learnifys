@@ -1,6 +1,7 @@
+import { storage } from "@/mmkv";
 import { supabase } from "@/supabase";
 import { Session, User } from "@supabase/supabase-js";
-import { SplashScreen, useRouter } from "expo-router";
+import { SplashScreen, useRouter,usePathname } from "expo-router";
 import React, {
   createContext,
   PropsWithChildren,
@@ -29,6 +30,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>();
   const [session, setSession] = useState<Session | null>(null);
   const [initialized, setInitialized] = useState<boolean>(false);
+  const role = storage.getString("role");
+    const pathname = usePathname();
+
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
@@ -50,15 +54,33 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       console.error("Error signing out:", error);
     }
   };
+  useEffect(() => {
+    console.log("Signing in", pathname)
+    }, [pathname]);
 
   useEffect(() => {
-    if (session) {
-      router.replace("(student)/(tabs)" as any);
+    if (role) {
+      if (session) {
+        if (role === "student") {
+          router.replace("(admin)/(tabs)" as any);
+        } else if (role === "teacher") {
+          router.replace("(teacher)/(tabs)" as any);
+        } else if (role === "admin") {
+          router.replace("(admin)/(tabs)" as any);
+        } else if (role === "parent") {
+          router.replace("(parents)/(tabs)" as any);
+        } else {
+          router.replace("choosing" as any);
+        }
+      } else {
+        router.replace("/(modals)/login" as any);
+      }
     } else {
-      router.replace("/(modals)/login");
+      router.replace("choosing" as any);
     }
+
     SplashScreen.hideAsync();
-  }, [session, user]);
+  }, [session]);
 
   const value = {
     user,
