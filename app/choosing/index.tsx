@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import i18n from "@/translations";
 import Greeting from "@/components/greeting/Greeting";
@@ -8,10 +7,8 @@ import SearchBar from "@/components/Search/SearchBar";
 import searchIcon from "@/assets/icons/search.png";
 import DropdownPicker from "../common/DropdownPicker";
 import PrimaryButton from "@/atoms/PrimaryButton";
-import { Entypo } from "@expo/vector-icons";
-import useAsyncStorage from "@/hooks/useAsyncStorage";
-import { fetchSystem } from "@/services/system.service";
-import { useTranslation } from "react-i18next";
+import { storage } from "@/mmkv";
+
 
 interface Props {
   name: string;
@@ -19,7 +16,6 @@ interface Props {
 }
 
 const ChoosingAgency: React.FC<Props> = ({ name, counting }) => {
-  const { data, saveData, loadingStorage, error } = useAsyncStorage("role");
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
@@ -34,9 +30,10 @@ const ChoosingAgency: React.FC<Props> = ({ name, counting }) => {
   const handleEnterPress = async () => {};
 
   const handleContinue = () => {
-    console.log(value)
-    saveData({ value: JSON.stringify(value) });
-    router.push("login");
+    if (value) {
+      storage.set('role', value)
+      router.push("login" as any);
+    }
   };
 
   return (

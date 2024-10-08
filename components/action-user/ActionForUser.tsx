@@ -48,11 +48,6 @@ const ActionForUser = () => {
           navigation="(modals)/information"
         />
         <ActionUser
-          icon={boxIcon}
-          title="retail-order-user"
-          navigation="calendars"
-        />
-        <ActionUser
           icon={agencyIcon}
           title="agencyOrder"
           navigation="(tabs)/message"

@@ -20,18 +20,27 @@ import background from "@/assets/images/background-home.png";
 import bellIcon from "@/assets/icons/bell-icon.png";
 import ActionRow from "@/components/action-header/ActionRow";
 import SearchBar from "@/components/Search/SearchBar";
+import { storage } from "@/mmkv";
 
 interface Props {
   name: string;
-  counting: number;
+  email: number;
+  avatar_url: string;
 }
 
-const UserHeader = ({ name, counting }: Props) => {
-  const router = useRouter();
-  const scrollRef = useRef<ScrollView>(null);
-  const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-
+const UserHeader = ({ name, email,avatar_url }: Props) => {
+  const role = storage.getString("role");
+  const getRoleString = () => {
+    if (role === "student") {
+          return i18n.t('student')
+        } else if (role === "teacher") {
+          return i18n.t('teacher')
+        } else if (role === "admin") {
+          return i18n.t('admin') 
+        } else if (role === "parent") {
+          return i18n.t('parent')
+        }
+  }
   return (
     <ImageBackground
       style={styles.container}
@@ -41,15 +50,14 @@ const UserHeader = ({ name, counting }: Props) => {
         <View style={styles.actionRow}>
             <Image
               source={{
-                uri: "https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-1/431950848_1466647250941777_8807338962286312656_n.jpg?stp=dst-jpg_p200x200&_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_ohc=SGP71mtKArYQ7kNvgE7aEKC&_nc_ht=scontent.fhan2-3.fna&oh=00_AYBzl1h26daSGIA-hUokIdJmiSnb4yhHtiTA2doAqYr3iQ&oe=6676D2BC",
+                uri: avatar_url,
               }}
               style={styles.avatar}
             />
             <View style={styles.textContainer}>
-              <Text style={styles.name}>Trần Ngọc Mạnh</Text>
-                            <Text style={styles.companyName}>CEO Founder - Phoenix Tech</Text>
-
-              <Text style={styles.phone}>0789 373 568</Text>
+              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.companyName}>{`Chức vụ : ${getRoleString()}`}</Text>
+              <Text style={styles.phone}>{email}</Text>
             </View>
           
         </View>

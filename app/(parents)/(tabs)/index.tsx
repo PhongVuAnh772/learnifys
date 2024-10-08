@@ -13,7 +13,6 @@ const Page = () => {
     setCategory(category);
   };
   const {user} = useAuth()
-  console.log(user?.user_metadata)
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <ExploreHeader avatar_url={user?.user_metadata?.avatar_url} name={user?.user_metadata?.full_name} counting={15} />

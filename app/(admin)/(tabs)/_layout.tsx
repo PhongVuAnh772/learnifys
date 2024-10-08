@@ -27,15 +27,7 @@ const Layout = () => {
           headerShown: false,
         }}
       />
-      <Tabs.Screen
-        name="favorite"
-        options={{
-          tabBarLabel: i18n.t("report-tab"),
-          tabBarIcon: ({ size, color, focused }) => (
-            <ReportIcon size={size} color={color} focused={focused} />
-          ),
-        }}
-      />
+      
       <Tabs.Screen
         name="explore"
         options={{

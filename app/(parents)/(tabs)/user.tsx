@@ -9,11 +9,14 @@ import TodayStatisticsUser from '@/components/statistics/TodayStatisticsUser';
 import UserHeader from '@/screens/tabs/user/Header/UserHeader';
 import CountingStar from '@/components/counting-star/CountingStar';
 import ActionForUser from '@/components/action-user/ActionForUser';
+import { useAuth } from '@/auth/ctx';
 const User = () => {
   const router = useRouter();
+    const {user} = useAuth()
+
   return (
     <ScrollView style={defaultStyles.container}>
-      <UserHeader name={"Phong Vũ Anh"} counting={15}/>
+      <UserHeader avatar_url={user?.user_metadata?.avatar_url} name={user?.user_metadata?.full_name} email={user?.user_metadata?.email}/>
       <CountingStar />
       <TodayStatisticsUser />
       <ActionForUser />
