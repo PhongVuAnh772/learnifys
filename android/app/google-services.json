@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1056569778895",
+    "project_id": "learnify-f8631",
+    "storage_bucket": "learnify-f8631.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056569778895:android:730c4716d61efd0113cdba",
+        "android_client_info": {
+          "package_name": "learnifys.learn.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb2t9PRl6K_mAOGogVRUyVPLIt76hIGEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
