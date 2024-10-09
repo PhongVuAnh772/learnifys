@@ -49,6 +49,12 @@
         }
       ],
       [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": "pk.eyJ1IjoicGhvbmd2dWFuaDc3MiIsImEiOiJjbTIyM3ViMGUwMzIzMmtwc2x3OWZodzA0In0.Aa8KkZQXO713qrQB2fzVHw"
+        }
+      ],
+      [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."

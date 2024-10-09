@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import MapView, { Region, MapViewProps } from "react-native-maps";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import Mapbox from '@rnmapbox/maps';
 
 const LOCATION_TASK_NAME = "background-location-task";
+Mapbox.setAccessToken('pk.eyJ1IjoicGhvbmd2dWFuaDc3MiIsImEiOiJjbTIyM3ViMGUwMzIzMmtwc2x3OWZodzA0In0.Aa8KkZQXO713qrQB2fzVHw');
 
 interface LocationCoords {
   latitude: number;
@@ -16,11 +17,11 @@ interface LocationCoords {
 }
 
 const useLocation = (): {
-  region: Region | null;
+  region:  null;
   error: string;
   statusGranted: boolean;
 } => {
-  const [region, setRegion] = useState<Region | null>(null);
+  const [region, setRegion] = useState<null>(null);
   const [error, setError] = useState<string>("");
   const [statusGranted, setStatusGranted] = useState<boolean>(false);
   useEffect(() => {
@@ -39,24 +40,25 @@ const useLocation = (): {
       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
         accuracy: Location.Accuracy.High,
         distanceInterval: 1,
-        timeInterval: 5000,
+        timeInterval: 500,
       });
 
       await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
           distanceInterval: 1,
-          timeInterval: 10000,
+          timeInterval: 500,
         },
         (newLocation) => {
           const { latitude, longitude } = newLocation.coords;
-          const region: Region = {
+          const region: any = {
             latitude,
             longitude,
             latitudeDelta: 0.045,
             longitudeDelta: 0.045,
           };
           setRegion(region);
+          console.log(latitude, longitude)
         }
       );
     };
@@ -69,7 +71,7 @@ const useLocation = (): {
 
 const MapScreen: React.FC = () => {
   const { region, error, statusGranted } = useLocation();
-  const mapRef = useRef<MapView | null>(null);
+  const mapRef = useRef<null>(null);
 
   if (!statusGranted) {
     return (
@@ -81,14 +83,7 @@ const MapScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <MapView
-        initialRegion={region || undefined}
-        showsCompass={true}
-        showsUserLocation={true}
-        rotateEnabled={true}
-        ref={mapRef}
-        style={{ flex: 1 }}
-      />
+        <Mapbox.MapView style={styles.map} />
     </View>
   );
 };
@@ -103,14 +98,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     const lat = locations[0].coords.latitude;
     const long = locations[0].coords.longitude;
     const userId = (await AsyncStorage.getItem("userId")) || "none";
-
-    // Storing received Lat & Long to DB by logged In User Id
-    axios.post("http://000.000.0.000/phpServer/ajax.php", {
-      action: "saveLocation",
-      userId,
-      lat,
-      long,
-    });
   }
 });
 
@@ -119,6 +106,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  map: {
+    flex: 1
+  }
 });
 
 export default MapScreen;
