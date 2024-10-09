@@ -37,6 +37,7 @@
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.5",
     "@rneui/themed": "^4.0.0-rc.8",
+    "@rnmapbox/maps": "^10.1.31",
     "@shopify/flash-list": "1.6.4",
     "@supabase/supabase-js": "^2.45.4",
     "axios": "^1.7.2",

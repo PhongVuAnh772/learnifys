@@ -183,5 +183,6 @@
     "news":"Tin tức",
     "for_children": "Quản lý con",
     "manage":"Quản lý",
-    "manage-student":"Quản lý HS"
+    "manage-student":"Quản lý HS",
+    "location-children":"Định vị con"
 }
