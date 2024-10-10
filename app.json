@@ -30,7 +30,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/learnify.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -41,6 +44,7 @@
       "expo-router",
       "expo-localization",
       "expo-calendar",
+      "react-native-background-fetch",
       "@react-native-firebase/app",
       [
         "expo-local-authentication",
@@ -54,12 +58,21 @@
           "RNMapboxMapsDownloadToken": "pk.eyJ1IjoicGhvbmd2dWFuaDc3MiIsImEiOiJjbTIyM3ViMGUwMzIzMmtwc2x3OWZodzA0In0.Aa8KkZQXO713qrQB2fzVHw"
         }
       ],
+
       [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
+      [
+        "expo-gradle-ext-vars",
+        {
+          "googlePlayServicesLocationVersion": "21.1.0",
+          "appCompatVersion": "1.4.2"
+        }
+      ],
+
       [
         "expo-camera",
         {
@@ -82,7 +95,8 @@
           }
         }
       ],
-      "expo-secure-store"],
+      "expo-secure-store"
+    ],
     "experiments": {
       "typedRoutes": true
     },
