@@ -4,22 +4,6 @@ interface RoleType {
   role: "teacher" | "student" | "parent" | "guest";
 }
 
-export const insertUser = async (
-  user: any,
-  email: string,
-  password: string,
-  role: RoleType
-) => {
-  await supabase.from("users").insert([
-    {
-      id: user.id,
-      email: email,
-      password: password,
-      role: role,
-    },
-  ]);
-};
-
 export const insertAssignments = async (
   courseId: string,
   title: string,
@@ -84,11 +68,11 @@ export const insertCertificate = async (
   ]);
 
   if (error) {
-    console.error("Error inserting certificate:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    console.error("Error inserting certificate: ", error.message);
+    return null;
   } else {
     console.log("Certificate inserted successfully:", data);
-    return data; // Trả về dữ liệu chứng chỉ vừa chèn
+    return data;
   }
 };
 
@@ -98,7 +82,6 @@ export const insertCourseReview = async (
   rating: number,
   reviewText?: string
 ) => {
-  // Kiểm tra xem rating có hợp lệ không (1 đến 5)
   if (rating < 1 || rating > 5) {
     console.error("Rating must be between 1 and 5.");
     return null;
@@ -203,10 +186,10 @@ export const insertEnrollment = async (
 
   if (error) {
     console.error("Error inserting enrollment:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Enrollment inserted successfully:", data);
-    return data; // Trả về dữ liệu ghi danh vừa chèn
+    return data;
   }
 };
 
@@ -247,10 +230,10 @@ export const insertMeetingAgenda = async (
 
   if (error) {
     console.error("Error inserting meeting agenda:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Meeting agenda inserted successfully:", data);
-    return data; // Trả về dữ liệu mục chương trình vừa chèn
+    return data;
   }
 };
 
@@ -269,10 +252,10 @@ export const insertMeetingRecord = async (
 
   if (error) {
     console.error("Error inserting meeting record:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Meeting record inserted successfully:", data);
-    return data; // Trả về dữ liệu bản ghi cuộc họp vừa chèn
+    return data;
   }
 };
 
@@ -291,10 +274,10 @@ export const insertNotification = async (
 
   if (error) {
     console.error("Error inserting notification:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Notification inserted successfully:", data);
-    return data; // Trả về dữ liệu thông báo vừa chèn
+    return data;
   }
 };
 
@@ -385,10 +368,10 @@ export const insertQuiz = async (
 
   if (error) {
     console.error("Error inserting quiz:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Quiz inserted successfully:", data);
-    return data; // Trả về dữ liệu quiz vừa chèn
+    return data;
   }
 };
 
@@ -409,10 +392,10 @@ export const insertQuizSubmission = async (
 
   if (error) {
     console.error("Error inserting quiz submission:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Quiz submission inserted successfully:", data);
-    return data; // Trả về dữ liệu bài nộp quiz vừa chèn
+    return data;
   }
 };
 
@@ -433,10 +416,10 @@ export const insertQuizQuestion = async (
 
   if (error) {
     console.error("Error inserting quiz question:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Quiz question inserted successfully:", data);
-    return data; // Trả về dữ liệu câu hỏi vừa chèn
+    return data;
   }
 };
 
@@ -455,9 +438,25 @@ export const insertQuizOption = async (
 
   if (error) {
     console.error("Error inserting quiz option:", error.message);
-    return null; // Hoặc xử lý lỗi tùy ý
+    return null;
   } else {
     console.log("Quiz option inserted successfully:", data);
-    return data; // Trả về dữ liệu tùy chọn vừa chèn
+    return data;
   }
+};
+
+export const insertUser = async (
+  user: any,
+  email: string,
+  password: string,
+  role: RoleType
+) => {
+  await supabase.from("users").insert([
+    {
+      id: user.id,
+      email: email,
+      password: password,
+      role: role,
+    },
+  ]);
 };

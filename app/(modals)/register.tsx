@@ -1,84 +1,81 @@
-import { View, StyleSheet, Text, Pressable, Image } from "react-native";
-import React, { useState } from "react";
-import { useRouter, useNavigation } from "expo-router";
-import i18n from "@/translations";
-import Greeting from "@/components/greeting/Greeting";
-import SearchBar from "@/components/Search/SearchBar";
 import PrimaryButton from "@/atoms/PrimaryButton";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import Greeting from "@/components/greeting/Greeting";
 import { useLoadingOverlay } from "@/components/loading/LoadingOverlay";
-import { RootState, AppDispatch } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { handleLogin } from "@/redux/actions/auth.action";
-import useAsyncStorage from "@/hooks/useAsyncStorage";
-import { useTranslation } from "react-i18next";
-import { useAuthViewModel, Strategy } from "@/features/auth";
-import { useLoadingContent } from "@/components/loading/LoadingContent";
-import Typography from "@/atoms/Typography/Typography";
-import googleLogo from "@/assets/icons/google.png";
+import SearchBar from "@/components/Search/SearchBar";
+import i18n from "@/translations";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { useNavigation, useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+
 import facebookLogo from "@/assets/icons/facebook.png";
 import githubLogo from "@/assets/icons/git-hub.png";
+import googleLogo from "@/assets/icons/google.png";
+import { useLoadingContent } from "@/components/loading/LoadingContent";
+import { Strategy, useAuthViewModel } from "@/features/auth";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
-import { ActivityIndicator } from "react-native-paper";
-import * as WebBrowser from 'expo-web-browser'
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
-import {auth} from '@/firebase'
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+WebBrowser.maybeCompleteAuthSession();
+
 interface Props {
   name: string;
   counting: number;
 }
+WebBrowser.maybeCompleteAuthSession(); // required for web only
+const redirectTo = makeRedirectUri();
 
-const Register: React.FC<Props> = ({ name, counting }) => {
+const Login: React.FC<Props> = ({ name, counting }) => {
   useWarmUpBrowser();
-  WebBrowser.maybeCompleteAuthSession()
   const { show, hide } = useLoadingOverlay();
   const router = useRouter();
   const navigation = useNavigation();
-  const [username, setUsername] = useState<string>("vuanhphong555@gmail.com");
+  const [username, setUsername] = useState<string>("0816560000");
   const [password, setPassword] = useState<string>("123456");
-  const [rePassword, setRePassword] = useState<string>("123456");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const dispatch = useDispatch<AppDispatch>();
+  const [errorMessage] = useState<string | null>(null);
   const { hideLoadingContent, showLoadingContent } = useLoadingContent();
-  const { error, loading } = useSelector((state: RootState) => state.auth);
-  const { data, saveData, loadingStorage } = useAsyncStorage("tokens");
+
+  const discovery = {
+    authorizationEndpoint: "https://github.com/login/oauth/authorize",
+    tokenEndpoint: "https://github.com/login/oauth/access_token",
+    revocationEndpoint: `https://github.com/settings/connections/applications/Ov23liOVyRodoWyLgcw8`,
+  };
+
+  const [response] = useAuthRequest(
+    {
+      clientId: `Ov23liOVyRodoWyLgcw8`,
+      scopes: ["identity", "user:email", "user:follow"],
+      redirectUri: makeRedirectUri(),
+    },
+    discovery
+  );
+
+  const handleResponse = () => {
+    console.log(response);
+  };
+
+  React.useEffect(() => {
+    handleResponse();
+  }, [response]);
+
   const {
-    handleLoginAction,
-    confirm,
-    setConfirm,
-    signInWithPhoneNumber,
-    loadingStrategy,
-    handleRegisterAction,
-    
+    performOAuthWithGithub,
+    performOAuthWithGoogle,
+    signInWithFacebook,
+    signUpWithCommonAuth,
+    handlePositionNavigate,
   } = useAuthViewModel(
     show,
     hide,
-    dispatch,
     navigation,
     hideLoadingContent,
     showLoadingContent,
     router,
-    auth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword
+    redirectTo
   );
 
-    
   const renderButtonContent = (strategy: Strategy, iconName: any) => {
-    const isLoading = loadingStrategy === strategy;
-    return (
-      <>
-        {isLoading ? (
-          <>
-            <ActivityIndicator size="small" color="#D80100" />
-          </>
-        ) : (
-          <>
-            <Image source={iconName} style={styles.logo} />
-          </>
-        )}
-      </>
-    );
+    return <Image source={iconName} style={styles.logo} />;
   };
 
   return (
@@ -87,12 +84,12 @@ const Register: React.FC<Props> = ({ name, counting }) => {
         title="register"
         description="greeting-register"
         otherDescription="invite-register"
+        overlayDescription="overlay-register"
       >
         <SearchBar
           placeholder={i18n.t("your-phone")}
           keyboardType="default"
           color="white"
-          // handleEnterPress={handleEnterPress}
           value={username}
           setValue={setUsername}
           icon={<Feather name="phone" size={18} color="#A5A5A9" />}
@@ -110,28 +107,16 @@ const Register: React.FC<Props> = ({ name, counting }) => {
           inputStyles={styles.input}
           secureTextEntry
         />
-        <SearchBar
-          placeholder={i18n.t("password")}
-          keyboardType="numeric"
-          color="white"
-          // handleEnterPress={handleEnterPress}
-          value={password}
-          setValue={setRePassword}
-          maxLength={10}
-          icon={<Ionicons name="key-outline" size={18} color="#A5A5A9" />}
-          inputStyles={styles.input}
-          secureTextEntry
-        />
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       </Greeting>
       <View
         style={{
           position: "absolute",
-          bottom: 10,
+          bottom: 25,
           left: 10,
           width: "95%",
+          height: "32%",
           justifyContent: "space-between",
-          gap: 25
         }}
       >
         <PrimaryButton
@@ -143,13 +128,70 @@ const Register: React.FC<Props> = ({ name, counting }) => {
             backgroundColor: "#D80100",
             width: "95%",
             alignSelf: "center",
+            marginBottom: 10,
           }}
           mode="contained"
-          onPress={() => handleRegisterAction(username, password, setErrorMessage)}
+          onPress={signUpWithCommonAuth}
+          textColor="white"
         >
           {i18n.t("continue")}
         </PrimaryButton>
-        
+        <PrimaryButton
+          style={{
+            height: 54,
+            borderRadius: 1000,
+            alignItems: "center",
+            justifyContent: "center",
+            width: "95%",
+            alignSelf: "center",
+          }}
+          mode="outlined"
+          onPress={handlePositionNavigate}
+        >
+          {i18n.t("edit-position")}
+        </PrimaryButton>
+        <View
+          style={[
+            styles.wrapSocial,
+            { gap: 15, alignItems: "center", paddingBottom: 15 },
+          ]}
+        >
+          <View style={[styles.separator]} />
+          <Text style={styles.separatorText}>{i18n.t("or")}</Text>
+          <View style={[styles.separator]} />
+        </View>
+        <View
+          style={[
+            styles.wrapSocial,
+            {
+              gap: 25,
+              alignItems: "center",
+              paddingBottom: 15,
+              justifyContent: "center",
+            },
+          ]}
+        >
+          <Pressable
+            style={styles.logoContainer}
+            onPress={() => performOAuthWithGithub()}
+          >
+            {renderButtonContent(Strategy.Github, githubLogo)}
+          </Pressable>
+          <Pressable
+            style={styles.logoContainer}
+            onPress={() => signInWithFacebook()}
+          >
+            {renderButtonContent(Strategy.Facebook, facebookLogo)}
+          </Pressable>
+          <Pressable
+            style={styles.logoContainer}
+            onPress={() => {
+              performOAuthWithGoogle();
+            }}
+          >
+            {renderButtonContent(Strategy.Google, googleLogo)}
+          </Pressable>
+        </View>
         <PrimaryButton
           style={{
             height: 54,
@@ -161,7 +203,7 @@ const Register: React.FC<Props> = ({ name, counting }) => {
             alignSelf: "center",
           }}
           mode="contained"
-          onPress={() => router.back()}
+          onPress={() => router.push("(modals)/login" as any)}
         >
           <Text style={{ color: "black" }}>{i18n.t("login")}</Text>
         </PrimaryButton>
@@ -219,4 +261,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(Register);
+export default React.memo(Login);

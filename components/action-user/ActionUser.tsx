@@ -1,30 +1,39 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import React from "react";
-import { Image } from "expo-image";
+import rightIcon from "@/assets/icons/right.png";
 import { blurhash } from "@/constants/BlurHash";
 import i18n from "@/translations";
-import rightIcon from "@/assets/icons/right.png";
-import { Link, useRouter } from "expo-router";
-import { useTranslation } from "react-i18next";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import React from "react";
+import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 
 interface Props {
   icon: any;
   title: string;
   navigation?: string;
   action?: () => void;
+  usingSwitch?: boolean;
+  onToggleSwitchLocation?: () => void;
+  isSwitchOnLocation?: boolean;
 }
 
-const ActionUser = ({ icon, title, navigation, action }: Props) => {
+const ActionUser = ({
+  icon,
+  title,
+  navigation,
+  action,
+  usingSwitch,
+  onToggleSwitchLocation,
+  isSwitchOnLocation,
+}: Props) => {
   const router = useRouter();
- 
+
   const handlePress = () => {
     if (action) {
       action();
     }
     if (navigation) {
-      router.push(navigation);
+      router.push(navigation as any);
     }
-    
   };
 
   return (
@@ -47,14 +56,21 @@ const ActionUser = ({ icon, title, navigation, action }: Props) => {
           {i18n.t(title)}
         </Text>
       </View>
-      <Image
-        source={rightIcon}
-        style={styles.rightIcon}
-        alt=""
-        placeholder={{ blurhash }}
-        contentFit="fill"
-        transition={1000}
-      />
+      {usingSwitch ? (
+        <Switch
+          value={isSwitchOnLocation}
+          onValueChange={onToggleSwitchLocation}
+        />
+      ) : (
+        <Image
+          source={rightIcon}
+          style={styles.rightIcon}
+          alt=""
+          placeholder={{ blurhash }}
+          contentFit="fill"
+          transition={1000}
+        />
+      )}
     </Pressable>
   );
 };

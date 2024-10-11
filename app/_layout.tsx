@@ -3,14 +3,16 @@ import { ToastProvider } from "@/common/ToastProvider";
 import ButtonAdd from "@/components/Button/ButtonAdd";
 import { LoadingContentProvider } from "@/components/loading/LoadingContent";
 import { LoadingOverlayProvider } from "@/components/loading/LoadingOverlay";
+import { NotificationProvider } from "@/components/notifications";
+import ToastConfig from "@/components/toasts";
 import Colors from "@/constants/Colors";
-import { usePushNotifications } from "@/hooks/useNotificationHelper";
 import { store } from "@/redux/store";
 import i18n from "@/translations/index";
 import { AntDesign, Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import "expo-dev-client";
 import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -22,12 +24,11 @@ import {
   UIManager,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { PaperProvider } from "react-native-paper";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { Switch } from "react-native-switch";
+import Toast from "react-native-toast-message";
 import { Provider } from "react-redux";
-import * as Notifications from "expo-notifications";
-import { NotificationProvider } from "@/components/notifications";
-import { AndroidNotificationPriority } from "expo-notifications";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -64,7 +65,6 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootLayout() {
-  const router = useRouter();
   const [loaded, error] = useFonts({
     "quicksand-bold": require("../assets/fonts/Quicksand-Bold.ttf"),
     "quicksand-light": require("../assets/fonts/Quicksand-Light.ttf"),
@@ -99,13 +99,20 @@ export default function RootLayout() {
                 <LoadingOverlayProvider>
                   <LoadingContentProvider>
                     <ToastProvider>
-                      {Platform.OS === "ios" && (
-                        <StatusBar barStyle="light-content" />
-                      )}
-                      {Platform.OS === "android" && (
-                        <StatusBar barStyle="light-content" />
-                      )}
-                      <RootLayoutNav />
+                      <PaperProvider>
+                        {Platform.OS === "ios" && (
+                          <StatusBar barStyle="light-content" />
+                        )}
+                        {Platform.OS === "android" && (
+                          <StatusBar barStyle="light-content" />
+                        )}
+                        <Toast
+                          config={ToastConfig}
+                          position="bottom"
+                          visibilityTime={3000}
+                        />
+                        <RootLayoutNav />
+                      </PaperProvider>
                     </ToastProvider>
                   </LoadingContentProvider>
                 </LoadingOverlayProvider>

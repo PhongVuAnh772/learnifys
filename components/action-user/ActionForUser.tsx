@@ -1,27 +1,27 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import i18n from "@/translations";
-import ActionUser from "./ActionUser";
+import agencyIcon from "@/assets/icons/agency.png";
 import editIcon from "@/assets/icons/edit.png";
 import logoutIcon from "@/assets/icons/logout.png";
-import boxIcon from "@/assets/icons/box.png";
-import agencyIcon from "@/assets/icons/agency.png";
 import myQRIcon from "@/assets/icons/my-qr.png";
 import passwordIcon from "@/assets/icons/password.png";
-import { useAppDispatch } from "@/redux/store";
-import { handleLogout as logoutThunk } from "@/redux/actions/auth.action";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLoadingOverlay } from "../loading/LoadingOverlay";
 import loginSticker from "@/assets/stickers/loading.png";
-import { useNavigation } from "expo-router";
-import { useTranslation } from "react-i18next";
 import { useAuth } from "@/auth/ctx";
+import { handleLogout as logoutThunk } from "@/redux/actions/auth.action";
+import { useAppDispatch } from "@/redux/store";
+import i18n from "@/translations";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useLoadingOverlay } from "../loading/LoadingOverlay";
+import ActionUser from "./ActionUser";
 
 const ActionForUser = () => {
   const dispatch = useAppDispatch();
   const { show, hide } = useLoadingOverlay();
-  const {signOut} = useAuth()
-  const navigation = useNavigation();
+  const { signOut, session } = useAuth();
+  const [isSwitchOnLocation, setIsSwitchOnLocation] = React.useState(false);
+  console.log(session);
+  const onToggleSwitchLocation = () =>
+    setIsSwitchOnLocation(!isSwitchOnLocation);
   const handleLogout = async () => {
     show("logout-loading-title", "logout-loading-description", loginSticker);
 
@@ -34,7 +34,7 @@ const ActionForUser = () => {
       console.error("Logout failed:", error);
     } finally {
       hide();
-      signOut?.(); 
+      signOut?.();
     }
   };
 
@@ -57,6 +57,14 @@ const ActionForUser = () => {
           icon={passwordIcon}
           title="changing-password"
           navigation="(modals)/information"
+        />
+        <ActionUser
+          usingSwitch
+          icon={logoutIcon}
+          title="log-out"
+          action={handleLogout}
+          onToggleSwitchLocation={onToggleSwitchLocation}
+          isSwitchOnLocation={isSwitchOnLocation}
         />
         <ActionUser icon={logoutIcon} title="log-out" action={handleLogout} />
       </View>

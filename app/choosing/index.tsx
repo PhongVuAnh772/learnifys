@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import i18n from "@/translations";
+import searchIcon from "@/assets/icons/search.png";
+import PrimaryButton from "@/atoms/PrimaryButton";
 import Greeting from "@/components/greeting/Greeting";
 import SearchBar from "@/components/Search/SearchBar";
-import searchIcon from "@/assets/icons/search.png";
-import DropdownPicker from "../common/DropdownPicker";
-import PrimaryButton from "@/atoms/PrimaryButton";
 import { storage } from "@/mmkv";
-
+import i18n from "@/translations";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import DropdownPicker from "../common/DropdownPicker";
 
 interface Props {
   name: string;
@@ -20,7 +19,7 @@ const ChoosingAgency: React.FC<Props> = ({ name, counting }) => {
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
+  const [items] = useState([
     { label: i18n.t("student"), value: "student", key: "student" },
     { label: i18n.t("admin"), value: "admin", key: "admin" },
     { label: i18n.t("parent"), value: "parent", key: "parent" },
@@ -31,8 +30,8 @@ const ChoosingAgency: React.FC<Props> = ({ name, counting }) => {
 
   const handleContinue = () => {
     if (value) {
-      storage.set('role', value)
-      router.push("login" as any);
+      storage.set("role", value);
+      router.push("register" as any);
     }
   };
 
@@ -74,6 +73,7 @@ const ChoosingAgency: React.FC<Props> = ({ name, counting }) => {
           backgroundColor: "#D80100",
         }}
         mode="contained"
+        textColor="white"
         onPress={handleContinue}
       >
         {i18n.t("continue")}

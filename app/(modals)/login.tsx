@@ -1,23 +1,21 @@
-import { View, StyleSheet, Text, Pressable, Image } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useRouter, useNavigation } from "expo-router";
-import i18n from "@/translations";
-import Greeting from "@/components/greeting/Greeting";
-import SearchBar from "@/components/Search/SearchBar";
 import PrimaryButton from "@/atoms/PrimaryButton";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import Greeting from "@/components/greeting/Greeting";
 import { useLoadingOverlay } from "@/components/loading/LoadingOverlay";
-import { AppDispatch } from "@/redux/store";
-import { useDispatch } from "react-redux";
+import SearchBar from "@/components/Search/SearchBar";
+import i18n from "@/translations";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { useNavigation, useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { useAuthViewModel, Strategy } from "@/features/auth";
-import { useLoadingContent } from "@/components/loading/LoadingContent";
-import googleLogo from "@/assets/icons/google.png";
 import facebookLogo from "@/assets/icons/facebook.png";
 import githubLogo from "@/assets/icons/git-hub.png";
+import googleLogo from "@/assets/icons/google.png";
+import { useLoadingContent } from "@/components/loading/LoadingContent";
+import { Strategy, useAuthViewModel } from "@/features/auth";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
-import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
 WebBrowser.maybeCompleteAuthSession();
 
 interface Props {
@@ -34,10 +32,8 @@ const Login: React.FC<Props> = ({ name, counting }) => {
   const navigation = useNavigation();
   const [username, setUsername] = useState<string>("0816560000");
   const [password, setPassword] = useState<string>("123456");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const dispatch = useDispatch<AppDispatch>();
+  const [errorMessage] = useState<string | null>(null);
   const { hideLoadingContent, showLoadingContent } = useLoadingContent();
-  const [userInfo, setUserInfo] = useState();
 
   const discovery = {
     authorizationEndpoint: "https://github.com/login/oauth/authorize",
@@ -67,7 +63,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
     performOAuthWithGoogle,
     signInWithFacebook,
     signUpWithCommonAuth,
-    handlePositionNavigate
+    handlePositionNavigate,
   } = useAuthViewModel(
     show,
     hide,
@@ -132,28 +128,15 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             backgroundColor: "#D80100",
             width: "95%",
             alignSelf: "center",
-                        marginBottom: 10
-
+            marginBottom: 10,
           }}
           mode="contained"
           onPress={signUpWithCommonAuth}
+          textColor="white"
         >
           {i18n.t("continue")}
         </PrimaryButton>
-        <PrimaryButton
-          style={{
-            height: 54,
-            borderRadius: 1000,
-            alignItems: "center",
-            justifyContent: "center",
-            width: "95%",
-            alignSelf: "center",
-          }}
-          mode="outlined"
-          onPress={handlePositionNavigate}
-        >
-          {i18n.t("edit-position")}
-        </PrimaryButton>
+
         <View
           style={[
             styles.wrapSocial,
@@ -205,7 +188,6 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             backgroundColor: "#F1F3F4",
             width: "95%",
             alignSelf: "center",
-
           }}
           mode="contained"
           onPress={() => router.push("(modals)/register" as any)}
