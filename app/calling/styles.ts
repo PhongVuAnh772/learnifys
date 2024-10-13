@@ -1,5 +1,5 @@
 import { colors, fonts, metrics } from "@/theme/other/themes";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   localStream: {
@@ -7,8 +7,8 @@ export const styles = StyleSheet.create({
     marginVertical: metrics.huge,
   },
   flex: {
-    flex: 1,
-  },
+     width: Dimensions.get('window').width,
+flex: 1  },
   remoteControlWithCameraOn: {
     position: "absolute",
     left: 0,
@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     flex: 1,
     color: colors.dark,
+    backgroundColor:'white'
   },
   nameInput: {
     borderWidth: 1,
@@ -45,6 +46,7 @@ export const styles = StyleSheet.create({
     color: colors.dark,
     marginHorizontal: metrics.small,
     marginTop: metrics.small,
+    backgroundColor:'white'
   },
   button: {
     padding: metrics.small,

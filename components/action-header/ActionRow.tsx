@@ -8,9 +8,10 @@ import i18n from "@/translations";
 import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { storage } from "@/mmkv";
+import { useAuth } from "@/auth/ctx";
 
 const ActionRow = () => {
-  const role = storage.getString("role");
+  const {role} = useAuth();
 
   return (
     <View style={styles.container}>

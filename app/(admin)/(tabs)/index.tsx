@@ -7,6 +7,7 @@ import TodayStatistics from "@/components/statistics/TodayStatistics";
 import TodayAppointment from "@/components/appointment/TodayAppointment";
 import { useAppSelector } from "@/redux/store";
 import { useAuth } from "@/auth/ctx";
+import TimelineCalendarScreen from "@/screens/calendars";
 const Page = () => {
   const [category, setCategory] = useState<string>("Tiny homes");
   const onDataChanged = (category: string) => {
@@ -19,6 +20,8 @@ const Page = () => {
       <SwiperHome />
       <TodayStatistics />
       <TodayAppointment />
+                        <TimelineCalendarScreen />
+
     </ScrollView>
   );
 };

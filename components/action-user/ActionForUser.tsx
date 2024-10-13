@@ -24,18 +24,10 @@ const ActionForUser = () => {
     setIsSwitchOnLocation(!isSwitchOnLocation);
   const handleLogout = async () => {
     show("logout-loading-title", "logout-loading-description", loginSticker);
-
-    try {
-      const accessToken = await AsyncStorage.getItem("tokens");
-      if (accessToken) {
-        await dispatch(logoutThunk({ accessToken })).unwrap();
-      }
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
+    signOut?.();
+    setTimeout(() => {
       hide();
-      signOut?.();
-    }
+    }, 1500);
   };
 
   return (

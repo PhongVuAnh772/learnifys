@@ -738,7 +738,7 @@ const CallingDashboard = () => {
           <TextInput
             style={styles.nameInput}
             value={userName}
-            placeholder="Enter display name"
+            placeholder="Tạo tên cuộc họp"
             onChangeText={setUserName}
           />
           <Pressable
@@ -746,12 +746,12 @@ const CallingDashboard = () => {
             onPress={createRoom}
             disabled={!userName}
           >
-            <Text style={styles.buttonTitle}>Create room</Text>
+            <Text style={styles.buttonTitle}>Tạo cuộc họp</Text>
           </Pressable>
           <View style={styles.joinContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Enter room id"
+              placeholder="Nhập id cuộc họp"
               onChangeText={setRoomId}
             />
             <Pressable
@@ -759,7 +759,7 @@ const CallingDashboard = () => {
               onPress={checkRoomExist}
               disabled={!roomId}
             >
-              <Text style={styles.buttonTitle}>Join</Text>
+              <Text style={styles.buttonTitle}>Vào</Text>
             </Pressable>
           </View>
         </>

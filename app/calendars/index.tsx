@@ -8,6 +8,8 @@ const Calendar = () => {
     <View style={styles.container}>
       <SearchCustomer />
       <TimelineCalendarScreen />
+                        <TimelineCalendarScreen />
+
         <ButtonAdd navigation="" style={styles.buttonAdd}/>
     </View>
   );

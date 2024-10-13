@@ -748,7 +748,7 @@ const CallingDashboard = () => {
         stream={localStream}
         mediaControl={localMediaControl}
         title={userName}
-        mirror={mirror}
+        mirror={true}
         flipCamera={flipCamera}
       />
       {/* <Clipboard title={roomId} /> */}
