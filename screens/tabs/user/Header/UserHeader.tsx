@@ -21,6 +21,7 @@ import bellIcon from "@/assets/icons/bell-icon.png";
 import ActionRow from "@/components/action-header/ActionRow";
 import SearchBar from "@/components/Search/SearchBar";
 import { storage } from "@/mmkv";
+import { useAuth } from "@/auth/ctx";
 
 interface Props {
   name: string;
@@ -29,7 +30,7 @@ interface Props {
 }
 
 const UserHeader = ({ name, email,avatar_url }: Props) => {
-  const role = storage.getString("role");
+  const {role} = useAuth();
   const getRoleString = () => {
     if (role === "student") {
           return i18n.t('student')

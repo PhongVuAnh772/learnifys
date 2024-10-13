@@ -252,9 +252,6 @@ const styles = StyleSheet.create({
     fontFamily: "quicksand-light",
   },
   footer: {
-    position: "absolute",
-    top: "45%",
-    width: "100%",
     height: 50,
     backgroundColor: "white",
     elevation: 1,

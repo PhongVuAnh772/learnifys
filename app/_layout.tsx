@@ -94,10 +94,10 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <NotificationProvider>
-            <AuthProvider>
-              <RootSiblingParent>
-                <LoadingOverlayProvider>
-                  <LoadingContentProvider>
+            <LoadingContentProvider>
+              <AuthProvider>
+                <RootSiblingParent>
+                  <LoadingOverlayProvider>
                     <ToastProvider>
                       <PaperProvider>
                         {Platform.OS === "ios" && (
@@ -114,10 +114,10 @@ export default function RootLayout() {
                         <RootLayoutNav />
                       </PaperProvider>
                     </ToastProvider>
-                  </LoadingContentProvider>
-                </LoadingOverlayProvider>
-              </RootSiblingParent>
-            </AuthProvider>
+                  </LoadingOverlayProvider>
+                </RootSiblingParent>
+              </AuthProvider>
+            </LoadingContentProvider>
           </NotificationProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>

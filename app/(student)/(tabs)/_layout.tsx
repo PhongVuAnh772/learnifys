@@ -43,7 +43,9 @@ const Layout = () => {
           tabBarIcon: ({ size, color, focused }) => (
             <OrderIcon size={size} color={color} focused={focused} />
           ),
+          headerShown: false,
         }}
+        
       />
       <Tabs.Screen
         name="message"
