@@ -15,7 +15,6 @@ import { ScrollView } from "react-native-gesture-handler";
 interface DotProps {
   color: string;
 }
-import { useTranslation } from "react-i18next";
 
 const INITIAL_TIME = { hour: 9, minutes: 0 };
 const INITIAL_DATE = "2022-07-06";

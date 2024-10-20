@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {ExpandableCalendar, AgendaList, CalendarProvider, WeekCalendar} from 'react-native-calendars';
 import testIDs from './mocks/testIDs';
 import {agendaItems, getMarkedDates} from './mocks/agendaItems';
-import AgendaItem from './mocks/Agendaitem'
+import AgendaItem from './mocks/AgendaItem'
 import {getTheme, themeColor, lightThemeColor} from './mocks/theme'
 import { MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from 'react-native-safe-area-context';
