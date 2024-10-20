@@ -56,12 +56,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         .from("users")
         .select("*")
         .eq("email", user?.user_metadata?.email);
-      console.log(data, error, "getDataDatabase");
-      if (data != null) {
+      if (data && data?.length > 0) {
         setSpicifiedInformation(data as any);
         setRole(data[0].role);
         console.log("data[0].role", data[0].role)
         getNavigation(data[0].role as any);
+      }
+      else {
+        hideLoadingContent();
+        router.replace("/(modals)/login");
+
       }
     };
     getDataDatabase();
@@ -85,6 +89,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, [pathname]);
 
   const getNavigation = (roleData: any) => {
+    console.log(roleData)
     if (roleData) {
       if (session) {
         if (roleData === "student") {
