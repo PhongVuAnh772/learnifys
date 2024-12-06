@@ -169,7 +169,6 @@
     "good-afternoon":"Good afternoon",
     "good-evening": "Good evening",
     "edit-position": "Edit position",
-        "score":"Score"
-
-
+    "score":"Score",
+    "enable-location": "Cho phép theo dõi định vị"
 }

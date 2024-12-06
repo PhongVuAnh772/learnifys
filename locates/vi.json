@@ -184,5 +184,6 @@
     "for_children": "Quản lý con",
     "manage":"Quản lý",
     "manage-student":"Quản lý HS",
-    "location-children":"Định vị con"
+    "location-children":"Định vị con",
+    "enable-location": "Cho phép theo dõi định vị"
 }

@@ -4,6 +4,7 @@ import logoutIcon from "@/assets/icons/logout.png";
 import myQRIcon from "@/assets/icons/my-qr.png";
 import passwordIcon from "@/assets/icons/password.png";
 import loginSticker from "@/assets/stickers/loading.png";
+import locationIcon from "@/assets/icons/location.png";
 import { useAuth } from "@/auth/ctx";
 import { handleLogout as logoutThunk } from "@/redux/actions/auth.action";
 import { useAppDispatch } from "@/redux/store";
@@ -52,8 +53,8 @@ const ActionForUser = () => {
         />
         <ActionUser
           usingSwitch
-          icon={logoutIcon}
-          title="log-out"
+          icon={locationIcon}
+          title="enable-location"
           action={handleLogout}
           onToggleSwitchLocation={onToggleSwitchLocation}
           isSwitchOnLocation={isSwitchOnLocation}
