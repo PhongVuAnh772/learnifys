@@ -2,9 +2,9 @@ import {useEffect} from "react";
 import messaging, {
   FirebaseMessagingTypes,
 } from "@react-native-firebase/messaging";
-import {useAppDispatch, useAppSelector} from "@/redux/store.ts";
-import {setDeviceToken} from "@/redux/actions/app.action.ts";
-import useAuth from "@/hooks/useAuth.ts";
+import {useAppDispatch, useAppSelector} from "@/redux/store";
+import {setDeviceToken} from "@/redux/actions/app.action";
+import useAuth from "@/hooks/useAuth";
 import {PermissionsAndroid, Platform} from "react-native";
 import notifee, {AndroidImportance, EventType, Event} from '@notifee/react-native'
 import {useNavigation} from "@react-navigation/native";

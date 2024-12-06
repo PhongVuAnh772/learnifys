@@ -99,7 +99,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
           placeholder={i18n.t("password")}
           keyboardType="numeric"
           color="white"
-          // handleEnterPress={handleEnterPress}
+          handleEnterPress={signUpWithCommonAuth}
           value={password}
           setValue={setPassword}
           maxLength={10}
