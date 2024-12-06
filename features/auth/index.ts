@@ -69,6 +69,7 @@ export const useAuthViewModel = (
   };
 
   async function signUpWithCommonAuth() {
+    console.log('1')
     const { data, error } = await supabase.auth.signUp({
       email: "vuanhphong1701@email.com",
       password: "Phongnd2209@",

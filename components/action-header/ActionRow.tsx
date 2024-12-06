@@ -15,7 +15,7 @@ const ActionRow = () => {
 
   return (
     <View style={styles.container}>
-      <Link href="category" asChild>
+      <Link href="/category" asChild>
         <Pressable style={styles.actionRow}>
           <Image source={listIcon} style={styles.icon} />
           <Text style={styles.description}>{i18n.t("list")}</Text>
@@ -23,7 +23,7 @@ const ActionRow = () => {
       </Link>
 
       {role === "admin" && (
-        <Link href="downline" asChild>
+        <Link href="/downline" asChild>
           <Pressable style={styles.actionRow}>
             <Image source={downlineIcon} style={styles.icon} />
             <Text style={styles.description}>{i18n.t("manage")}</Text>
@@ -31,7 +31,7 @@ const ActionRow = () => {
         </Link>
       )}
       {role === "parent" && (
-        <Link href="downline" asChild>
+        <Link href="/downline" asChild>
           <Pressable style={styles.actionRow}>
             <Image source={downlineIcon} style={styles.icon} />
             <Text style={styles.description}>{i18n.t("for_children")}</Text>
@@ -40,7 +40,7 @@ const ActionRow = () => {
       )}
 
       {role === "student" && (
-        <Link href="downline" asChild>
+        <Link href="/library" asChild>
           <Pressable style={styles.actionRow}>
             <Image source={downlineIcon} style={styles.icon} />
             <Text style={styles.description}>{i18n.t("library")}</Text>
@@ -49,7 +49,7 @@ const ActionRow = () => {
       )}
 
       {role === "teacher" && (
-        <Link href="downline" asChild>
+        <Link href="/downline" asChild>
           <Pressable style={styles.actionRow}>
             <Image source={downlineIcon} style={styles.icon} />
             <Text style={styles.description}>{i18n.t("score")}</Text>
@@ -57,13 +57,13 @@ const ActionRow = () => {
         </Link>
       )}
 
-      <Link href="campaign" asChild>
+      <Link href="/campaign" asChild>
         <Pressable style={styles.actionRow}>
           <Image source={campaignIcon} style={styles.icon} />
           <Text style={styles.description}>{i18n.t("news")}</Text>
         </Pressable>
       </Link>
-      <Link href="training" asChild>
+      <Link href="/training" asChild>
         <Pressable style={styles.actionRow}>
           <Image source={trainIcon} style={styles.icon} />
           <Text style={styles.description}>{i18n.t("training")}</Text>

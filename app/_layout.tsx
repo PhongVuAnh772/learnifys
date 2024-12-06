@@ -178,6 +178,7 @@ function RootLayoutNav() {
           animation: "none",
         }}
       />
+      
       <Stack.Screen
         name="in-call/index"
         options={{
@@ -254,6 +255,14 @@ function RootLayoutNav() {
         options={{
           animation: "slide_from_bottom",
           title: i18n.t("notifications"),
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="library/index"
+        options={{
+          animation: "slide_from_right",
+          headerTransparent: true,
           headerShown: false,
         }}
       />
