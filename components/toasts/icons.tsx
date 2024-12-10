@@ -1,3 +1,7 @@
-export { const as ToastErrorSvgIcon } from "@/assets/icons/toast_error.svg";
-export { const as ToastSuccessSvgIcon } from "@/assets/icons/toast_success.svg";
-export { const as ToastInfoSvgIcon } from "@/assets/icons/toast_warning.svg";
+import ToastErrorSvgIcon from "../../assets/icons/more.png";
+import ToastSuccessSvgIcon from "../../assets/icons/more.png";
+import ToastInfoSvgIcon from "../../assets/icons/more.png";
+
+export { ToastErrorSvgIcon };
+export { ToastSuccessSvgIcon };
+export { ToastInfoSvgIcon };

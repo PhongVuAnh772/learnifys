@@ -33,7 +33,7 @@ interface LoadingOverlayProviderProps {
 export const LoadingOverlayProvider: React.FC<LoadingOverlayProviderProps> = ({
   children,
 }) => {
-   
+
   const isSmallScreen = useDimensions();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState<string | undefined>(undefined);
@@ -60,7 +60,7 @@ export const LoadingOverlayProvider: React.FC<LoadingOverlayProviderProps> = ({
       {children}
       {loading && (
         <Animated.View style={styles.overlay} entering={FadeInUp}>
-          <View style={ [styles.loadingContent,  { height:isSmallScreen ?465 : 500}]}>
+          <View style={[styles.loadingContent, { height: isSmallScreen ? 465 : 500 }]}>
             {image && <Image source={image} style={styles.image} />}
             <View style={styles.textLoading}>
               {title && <Text style={styles.title}>{i18n.t(title)}</Text>}
@@ -83,7 +83,7 @@ export const useLoadingOverlay = () => {
       "useLoadingOverlay must be used within a LoadingOverlayProvider"
     );
   }
-  return context; 
+  return context;
 };
 
 const styles = StyleSheet.create({
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 24,
     fontFamily: "quicksand-bold",
-    textAlign:"center",
+    textAlign: "center",
   },
   description: {
     color: "black",

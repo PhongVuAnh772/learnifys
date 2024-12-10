@@ -8,7 +8,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import i18n from "@/translations";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { defaultStyles } from "@/constants/Styles";
@@ -22,7 +22,6 @@ import { Image } from "expo-image";
 import { blurhash } from "@/constants/BlurHash";
 import { FlashList } from "@shopify/flash-list";
 import { Facebook } from "react-content-loader";
-
 const data = [
   {
     title: "",
@@ -46,51 +45,60 @@ const data = [
   },
 ];
 
-const RenderItem = ({item}: any) => (
-  <View style={styles.contentNotify}>
-        <View style={styles.overview}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={addNotifyIcon}
-              alt=""
-              style={styles.icon}
-              placeholder={{ blurhash }}
-              contentFit="fill"
-              transition={1000}
-            />
-          </View>
-          <View style={styles.titleContainer}>
-            <Text style={styles.time}>16:26 25/05/2024</Text>
-                        <Text style={styles.title}>25 người đăng ký sự kiện</Text>
 
-          </View>
-          <View style={styles.dot}></View>
-        </View>
-        <Text style={styles.description} numberOfLines={2}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Text>
+
+const RenderItem = ({ item }: any) => (
+  <View style={styles.contentNotify}>
+    <View style={styles.overview}>
+      <View style={styles.iconContainer}>
+        <Image
+          source={addNotifyIcon}
+          alt=""
+          style={styles.icon}
+          placeholder={{ blurhash }}
+          contentFit="fill"
+          transition={1000}
+        />
       </View>
+      <View style={styles.titleContainer}>
+        <Text style={styles.time}>16:26 25/05/2024</Text>
+        <Text style={styles.title}>25 người đăng ký sự kiện</Text>
+
+      </View>
+      <View style={styles.dot}></View>
+    </View>
+    <Text style={styles.description} numberOfLines={2}>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+      minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+      aliquip ex ea commodo consequat. Duis aute irure dolor in
+      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+      culpa qui officia deserunt mollit anim id est laborum.
+    </Text>
+  </View>
 )
 
 const Notifications = () => {
+  const [dataNotifications, setDataNotifications] = useState<any>([])
   useWarmUpBrowser();
   const router = useRouter();
+  useEffect(() => {
+    const getData = async () => {
+
+    }
+    getData()
+  }, [])
 
   return (
     <View style={styles.container}>
       <FlashList
-      data={data}
-      renderItem={({ item }) => <RenderItem item={item} />}
-      estimatedItemSize={200}
-      showsVerticalScrollIndicator={false}
+        data={data}
+        renderItem={({ item }) => <RenderItem item={item} />}
+        estimatedItemSize={200}
+        showsVerticalScrollIndicator={false}
       // ListEmptyComponent={() => <Facebook />}
-    />
+      />
     </View>
   );
 };
@@ -146,7 +154,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1,
     gap: 5,
-    
+
   },
   time: {
     fontSize: 14,

@@ -30,8 +30,8 @@ const Login: React.FC<Props> = ({ name, counting }) => {
   const { show, hide } = useLoadingOverlay();
   const router = useRouter();
   const navigation = useNavigation();
-  const [username, setUsername] = useState<string>("0816560000");
-  const [password, setPassword] = useState<string>("123456");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [errorMessage] = useState<string | null>(null);
   const { hideLoadingContent, showLoadingContent } = useLoadingContent();
 
