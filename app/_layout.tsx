@@ -90,7 +90,7 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
+    <><Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <NotificationProvider>
@@ -106,11 +106,7 @@ export default function RootLayout() {
                         {Platform.OS === "android" && (
                           <StatusBar barStyle="light-content" />
                         )}
-                        <Toast
-                          config={ToastConfig}
-                          position="bottom"
-                          visibilityTime={3000}
-                        />
+
                         <RootLayoutNav />
                       </PaperProvider>
                     </ToastProvider>
@@ -122,6 +118,11 @@ export default function RootLayout() {
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </Provider>
+      <Toast
+        config={ToastConfig}
+        position="bottom"
+        visibilityTime={3000}
+      /></>
   );
 }
 
@@ -178,7 +179,7 @@ function RootLayoutNav() {
           animation: "none",
         }}
       />
-      
+
       <Stack.Screen
         name="in-call/index"
         options={{
@@ -499,7 +500,7 @@ function RootLayoutNav() {
           headerStyle: {
             backgroundColor: "rgb(241, 243, 244)",
           },
-          headerRight: () => <ButtonAdd navigation={() => {}} />,
+          headerRight: () => <ButtonAdd navigation={() => { }} />,
         }}
       />
       <Stack.Screen
