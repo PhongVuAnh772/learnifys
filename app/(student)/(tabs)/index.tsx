@@ -12,12 +12,11 @@ const Page = () => {
   const onDataChanged = (category: string) => {
     setCategory(category);
   };
-  const {user} = useAuth()
+  const { user } = useAuth()
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <ExploreHeader avatar_url={user?.user_metadata?.avatar_url} name={user?.user_metadata?.full_name} counting={15} />
       <SwiperHome />
-      <TodayStatistics />
       <TodayAppointment />
     </ScrollView>
   );

@@ -35,17 +35,17 @@ export const LoadingContentProvider: React.FC<LoadingContentProviderProps> = ({
   };
 
   const hideLoadingContent = () => setLoading(false);
- 
+
   return (
     <LoadingContentContext.Provider
       value={{ showLoadingContent, hideLoadingContent }}
     >
       {children}
-      {loading && (
+      {/* {loading && (
         <Animated.View style={styles.overlay} entering={FadeInUp}>
           <ActivityIndicatorPaper color="white" animating={true} size="small" />
         </Animated.View>
-      )}
+      )} */}
     </LoadingContentContext.Provider>
   );
 };
@@ -62,7 +62,7 @@ export const useLoadingContent = () => {
 
 const styles = StyleSheet.create({
   overlay: {
-    backgroundColor: "#00000068",
+    backgroundColor: "rgba(0,0,0,0.8)",
     position: "absolute",
     left: 0,
     top: 0,

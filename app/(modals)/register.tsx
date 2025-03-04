@@ -30,8 +30,8 @@ const Login: React.FC<Props> = ({ name, counting }) => {
   const { show, hide } = useLoadingOverlay();
   const router = useRouter();
   const navigation = useNavigation();
-  const [username, setUsername] = useState<string>("0816560000");
-  const [password, setPassword] = useState<string>("123456");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [errorMessage] = useState<string | null>(null);
   const { hideLoadingContent, showLoadingContent } = useLoadingContent();
 
@@ -64,6 +64,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
     signInWithFacebook,
     signUpWithCommonAuth,
     handlePositionNavigate,
+    setRegisterEmail, setRegisterPassword, registerEmail, registerPassword
   } = useAuthViewModel(
     show,
     hide,
@@ -80,18 +81,28 @@ const Login: React.FC<Props> = ({ name, counting }) => {
 
   return (
     <>
+
       <Greeting
         title="register"
         description="greeting-register"
         otherDescription="invite-register"
         overlayDescription="overlay-register"
       >
+        <Pressable style={{
+          position: 'absolute',
+          top: 10,
+          left: 10,
+          width: 32,
+          height: 32,
+        }}>
+          <Ionicons name="checkmark-circle" size={32} color="white" />
+        </Pressable>
         <SearchBar
           placeholder={i18n.t("your-phone")}
           keyboardType="default"
           color="white"
-          value={username}
-          setValue={setUsername}
+          value={registerEmail}
+          setValue={setRegisterEmail}
           icon={<Feather name="phone" size={18} color="#A5A5A9" />}
           inputStyles={styles.input}
         />
@@ -99,26 +110,15 @@ const Login: React.FC<Props> = ({ name, counting }) => {
           placeholder={i18n.t("password")}
           keyboardType="numeric"
           color="white"
-          // handleEnterPress={handleEnterPress}
-          value={password}
-          setValue={setPassword}
+          handleEnterPress={signUpWithCommonAuth}
+          value={registerPassword}
+          setValue={setRegisterPassword}
           maxLength={10}
           icon={<Ionicons name="key-outline" size={18} color="#A5A5A9" />}
           inputStyles={styles.input}
           secureTextEntry
         />
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
-      </Greeting>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 25,
-          left: 10,
-          width: "95%",
-          height: "32%",
-          justifyContent: "space-between",
-        }}
-      >
         <PrimaryButton
           style={{
             height: 54,
@@ -126,7 +126,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#D80100",
-            width: "95%",
+            width: "100%",
             alignSelf: "center",
             marginBottom: 10,
           }}
@@ -142,7 +142,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             borderRadius: 1000,
             alignItems: "center",
             justifyContent: "center",
-            width: "95%",
+            width: "100%",
             alignSelf: "center",
           }}
           mode="outlined"
@@ -153,7 +153,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
         <View
           style={[
             styles.wrapSocial,
-            { gap: 15, alignItems: "center", paddingBottom: 15 },
+            { gap: 15, alignItems: "center" },
           ]}
         >
           <View style={[styles.separator]} />
@@ -192,22 +192,9 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             {renderButtonContent(Strategy.Google, googleLogo)}
           </Pressable>
         </View>
-        <PrimaryButton
-          style={{
-            height: 54,
-            borderRadius: 1000,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#F1F3F4",
-            width: "95%",
-            alignSelf: "center",
-          }}
-          mode="contained"
-          onPress={() => router.push("(modals)/login" as any)}
-        >
-          <Text style={{ color: "black" }}>{i18n.t("login")}</Text>
-        </PrimaryButton>
-      </View>
+
+      </Greeting>
+
     </>
   );
 };
@@ -261,4 +248,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(Login);
+export default Login;

@@ -63,7 +63,11 @@ const Login: React.FC<Props> = ({ name, counting }) => {
     performOAuthWithGoogle,
     signInWithFacebook,
     signUpWithCommonAuth,
-    handlePositionNavigate,
+    signInWithCommonAuth,
+    setLoginEmail,
+    setLoginPassword,
+    loginEmail,
+    loginPassword,
   } = useAuthViewModel(
     show,
     hide,
@@ -87,38 +91,26 @@ const Login: React.FC<Props> = ({ name, counting }) => {
         overlayDescription="overlay-login"
       >
         <SearchBar
-          placeholder={i18n.t("your-phone")}
+          placeholder={'Hãy nhập Email của bạn'}
           keyboardType="default"
           color="white"
-          value={username}
-          setValue={setUsername}
+          value={loginEmail}
+          setValue={setLoginEmail}
           icon={<Feather name="phone" size={18} color="#A5A5A9" />}
           inputStyles={styles.input}
         />
         <SearchBar
           placeholder={i18n.t("password")}
-          keyboardType="numeric"
+          keyboardType="default"
           color="white"
-          handleEnterPress={signUpWithCommonAuth}
-          value={password}
-          setValue={setPassword}
-          maxLength={10}
+          handleEnterPress={signInWithCommonAuth}
+          value={loginPassword}
+          setValue={setLoginPassword}
           icon={<Ionicons name="key-outline" size={18} color="#A5A5A9" />}
           inputStyles={styles.input}
           secureTextEntry
         />
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
-      </Greeting>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 25,
-          left: 10,
-          width: "95%",
-          height: "32%",
-          justifyContent: "space-between",
-        }}
-      >
         <PrimaryButton
           style={{
             height: 54,
@@ -126,12 +118,12 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#D80100",
-            width: "95%",
+            width: "100%",
             alignSelf: "center",
             marginBottom: 10,
           }}
           mode="contained"
-          onPress={signUpWithCommonAuth}
+          onPress={signInWithCommonAuth}
           textColor="white"
         >
           {i18n.t("continue")}
@@ -140,7 +132,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
         <View
           style={[
             styles.wrapSocial,
-            { gap: 15, alignItems: "center", paddingBottom: 15 },
+            { alignItems: 'center' }
           ]}
         >
           <View style={[styles.separator]} />
@@ -153,7 +145,6 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             {
               gap: 25,
               alignItems: "center",
-              paddingBottom: 15,
               justifyContent: "center",
             },
           ]}
@@ -186,7 +177,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#F1F3F4",
-            width: "95%",
+            width: "100%",
             alignSelf: "center",
           }}
           mode="contained"
@@ -194,7 +185,9 @@ const Login: React.FC<Props> = ({ name, counting }) => {
         >
           <Text style={{ color: "black" }}>{i18n.t("register")}</Text>
         </PrimaryButton>
-      </View>
+      </Greeting>
+
+
     </>
   );
 };
@@ -228,6 +221,7 @@ const styles = StyleSheet.create({
     color: "#DADCE0",
     fontFamily: "quicksand-bold",
     marginBottom: 5,
+    paddingHorizontal: 5
   },
   logo: {
     width: 24,

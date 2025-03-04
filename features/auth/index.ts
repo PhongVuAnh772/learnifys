@@ -1,7 +1,7 @@
 import { ImageSourcePropType } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
 import loginSticker from "@/assets/stickers/loading.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -14,6 +14,7 @@ import { supabase } from "@/supabase";
 import * as WebBrowser from "expo-web-browser";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import { storage } from "@/mmkv";
+import Toast from "react-native-toast-message";
 
 export enum Strategy {
   Google = "oauth_google",
@@ -43,6 +44,13 @@ export const useAuthViewModel = (
   redirectTo: any
 ) => {
   const [confirm, setConfirm] = useState(null);
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+
+  const [registerEmail, setRegisterEmail] = useState('')
+
+  const [registerPassword, setRegisterPassword] = useState('')
+
 
   const createSessionFromUrl = async (url: string) => {
     const { params, errorCode } = QueryParams.getQueryParams(url);
@@ -69,14 +77,41 @@ export const useAuthViewModel = (
   };
 
   async function signUpWithCommonAuth() {
-    console.log('1')
     const { data, error } = await supabase.auth.signUp({
-      email: "vuanhphong1701@email.com",
-      password: "Phongnd2209@",
-      options: {},
+      email: registerEmail,
+      password: registerPassword,
     });
+    showLoadingContent()
+    if (error !== null) {
+      hideLoadingContent()
+      Toast.show({
+        type: 'error',
+        text1: 'Đăng ký thất bại,hãy thử lại',
+      });
+      console.log(error)
+      return;
+    }
+    createUserToDataBase(data)
+    hideLoadingContent()
+    console.log(data)
   }
-
+  async function signInWithCommonAuth() {
+    showLoadingContent()
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: loginEmail,
+      password: loginPassword,
+    });
+    if (error !== null) {
+      hideLoadingContent()
+      Toast.show({
+        type: 'error',
+        text1: 'Đăng nhập thất bại, hãy thử lại',
+      });
+      return;
+    }
+    console.log(data)
+    hideLoadingContent()
+  }
   async function signInWithFacebook() {
     show("login-loading-title", "login-loading-description", loginSticker);
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -86,9 +121,12 @@ export const useAuthViewModel = (
         skipBrowserRedirect: true,
       },
     });
-    if (error) {
+    if (error !== null) {
       hide();
-      throw error;
+      Toast.show({
+        type: 'error',
+        text1: 'Đăng nhập thất bại,hãy thử lại',
+      });
     }
 
     const res = await WebBrowser.openAuthSessionAsync(
@@ -109,31 +147,69 @@ export const useAuthViewModel = (
       const userInfo = await GoogleSignin.signIn();
       console.log("userInfo", userInfo);
 
-      if (userInfo.data?.idToken) {
-        const { data, error } = await supabase.auth.signInWithIdToken({
-          provider: "google",
-          token: userInfo.data?.idToken,
-        });
+      // if (userInfo.data?.idToken) {
+      //   const { data, error } = await supabase.auth.signInWithIdToken({
+      //     provider: "google",
+      //     token: userInfo.data?.idToken,
+      //   });
 
-        console.log(error, data);
-        console.log(userInfo.data?.idToken);
-      } else {
-        throw new Error("no ID token present!");
-      }
+      //   console.log(error, data);
+      //   console.log(userInfo.data?.idToken);
+      // } else {
+      //   throw new Error("no ID token present!");
+      // }
     } catch (error) {
       throw new Error("no ID token present!");
     }
   };
 
+
+
   const createUserToDataBase = async (dataUser: any) => {
-    const { data, error } = await supabase
+    if (!dataUser?.user?.email) {
+      console.error("Email is missing from dataUser");
+      return;
+    }
+
+    const email = dataUser.user.email;
+
+    const { data: existingUser, error: fetchError } = await supabase
       .from("users")
-      .insert(
-        { email: dataUser?.user?.email, role: storage.getString("role"),login_with: "facebook", device_token: "",password: "" },
-      )
-      .select();
-      console.log(data,error, "createUserToDataBase")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") {
+      console.error("Error fetching user:", fetchError);
+      return;
+    }
+
+    if (existingUser) {
+      console.log("User already exists:", existingUser);
+      return existingUser;
+    }
+
+    const { data: newUser, error: insertError } = await supabase
+      .from("users")
+      .insert({
+        email,
+        role: storage.getString("role"),
+        login_with: "facebook",
+        device_token: "",
+        password: "",
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error("Error inserting user:", insertError);
+      return;
+    }
+
+    console.log("User created:", newUser);
+    return newUser;
   };
+
 
   const performOAuthWithGithub = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -170,5 +246,14 @@ export const useAuthViewModel = (
     signInWithFacebook,
     signUpWithCommonAuth,
     handlePositionNavigate,
+    setLoginEmail,
+    setLoginPassword,
+    setRegisterEmail,
+    setRegisterPassword,
+    signInWithCommonAuth,
+    loginEmail,
+    loginPassword,
+    registerEmail,
+    registerPassword
   };
 };
