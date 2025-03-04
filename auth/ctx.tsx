@@ -17,6 +17,7 @@ type AuthProps = {
   signOut?: () => void;
   role: string;
   spicifiedInformation: any;
+  authStateChecking: () => void
 };
 
 export const AuthContext = createContext<Partial<AuthProps>>({});
@@ -26,8 +27,6 @@ export function useAuth() {
   return React.useContext(AuthContext);
 }
 
-const EXPO_ACCESS_STREAM_KEY_PASSWORD =
-  process.env.EXPO_ACCESS_STREAM_KEY_PASSWORD;
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>();
@@ -49,27 +48,26 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
-  useEffect(() => {
-    const getDataDatabase = async () => {
-      let { data, error } = await supabase
-
+  const authStateChecking = async () => {
+    if (session) {
+      const { data, error } = await supabase
         .from("users")
         .select("*")
-        .eq("email", user?.user_metadata?.email);
-      if (data && data?.length > 0) {
+        .eq("email", session.user?.user_metadata?.email);
+
+      if (data && data.length > 0) {
         setSpicifiedInformation(data as any);
         setRole(data[0].role);
-        console.log("data[0].role", data[0].role)
         getNavigation(data[0].role as any);
-      }
-      else {
+      } else {
         hideLoadingContent();
         router.replace("/(modals)/login");
-
       }
-    };
-    getDataDatabase();
-  }, [user]);
+    } else {
+      hideLoadingContent();
+      router.replace("/(modals)/login");
+    }
+  }
 
   const signOut = async () => {
     try {
@@ -84,41 +82,49 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       router.replace("/(modals)/login");
     }
   };
-  useEffect(() => {
-    console.log("Signing in", pathname);
-  }, [pathname]);
 
-  const getNavigation = (roleData: any) => {
-    console.log(roleData)
-    if (roleData) {
-      if (session) {
-        if (roleData === "student") {
-          router.replace("(student)/(tabs)" as any);
-          hideLoadingContent();
-        } else if (roleData === "teacher") {
-          router.replace("(teacher)/(tabs)" as any);
-          hideLoadingContent();
-        } else if (roleData === "admin") {
-          router.replace("(admin)/(tabs)" as any);
-          hideLoadingContent();
-        } else if (roleData === "parent") {
-          router.replace("(parents)/(tabs)" as any);
-          hideLoadingContent();
-        } else {
-          router.replace("choosing" as any);
-          hideLoadingContent();
-        }
-      } else {
-        router.replace("/(modals)/login" as any);
-        hideLoadingContent();
-      }
-    } else {
+  const getNavigation = (roleData: string) => {
+    if (!roleData) {
       router.replace("choosing" as any);
       hideLoadingContent();
+      SplashScreen.hideAsync();
+      return;
     }
 
+    if (!session) {
+      router.replace("/(modals)/login");
+      hideLoadingContent();
+      SplashScreen.hideAsync();
+      return;
+    }
+
+    switch (roleData) {
+      case "student":
+        router.replace("(student)/(tabs)" as any);
+        break;
+      case "teacher":
+        router.replace("(teacher)/(tabs)" as any);
+        break;
+      case "admin":
+        router.replace("(admin)/(tabs)" as any);
+        break;
+      case "parent":
+        router.replace("(parents)/(tabs)" as any);
+        break;
+      default:
+        router.replace("choosing");
+    }
+
+    hideLoadingContent();
     SplashScreen.hideAsync();
-  }
+  };
+
+  useEffect(() => {
+    if (!initialized) return;
+    if (!session) {
+      router.replace('/onboarding');
+    }
+  }, [initialized, session]);
 
   const value = {
     user,
@@ -127,6 +133,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     signOut,
     role,
     spicifiedInformation,
+    authStateChecking
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

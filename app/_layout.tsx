@@ -90,34 +90,34 @@ export default function RootLayout() {
   }
 
   return (
-    <><Provider store={store}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetModalProvider>
-          <NotificationProvider>
-            <LoadingContentProvider>
-              <AuthProvider>
-                <RootSiblingParent>
-                  <LoadingOverlayProvider>
-                    <ToastProvider>
-                      <PaperProvider>
-                        {Platform.OS === "ios" && (
-                          <StatusBar barStyle="light-content" />
-                        )}
-                        {Platform.OS === "android" && (
-                          <StatusBar barStyle="light-content" />
-                        )}
-
-                        <RootLayoutNav />
-                      </PaperProvider>
-                    </ToastProvider>
-                  </LoadingOverlayProvider>
-                </RootSiblingParent>
-              </AuthProvider>
-            </LoadingContentProvider>
-          </NotificationProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-    </Provider>
+    <>
+      <Provider store={store}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <BottomSheetModalProvider>
+            <NotificationProvider>
+              <LoadingContentProvider>
+                <AuthProvider>
+                  <RootSiblingParent>
+                    <LoadingOverlayProvider>
+                      <ToastProvider>
+                        <PaperProvider>
+                          {Platform.OS === "ios" && (
+                            <StatusBar barStyle="light-content" />
+                          )}
+                          {Platform.OS === "android" && (
+                            <StatusBar barStyle="light-content" />
+                          )}
+                          <RootLayoutNav />
+                        </PaperProvider>
+                      </ToastProvider>
+                    </LoadingOverlayProvider>
+                  </RootSiblingParent>
+                </AuthProvider>
+              </LoadingContentProvider>
+            </NotificationProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </Provider>
       <Toast
         config={ToastConfig}
         position="bottom"
@@ -176,7 +176,7 @@ function RootLayoutNav() {
         options={{
           title: i18n.t("login-title"),
           headerShown: false,
-          animation: "none",
+          animation: "slide_from_bottom",
         }}
       />
 
@@ -236,21 +236,13 @@ function RootLayoutNav() {
           ),
         }}
       />
-      {/* <Stack.Screen
-        name="(modals)/signup"
+      <Stack.Screen
+        name="onboarding/index"
         options={{
-          animation: "fade",
-          title: i18n.t("sign-up"),
-          headerTitleStyle: {
-            fontFamily: "quicksand-bold",
-          },
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="close-outline" size={28} />
-            </TouchableOpacity>
-          ),
+          animation: "slide_from_bottom",
+          headerShown: false,
         }}
-      /> */}
+      />
       <Stack.Screen
         name="(modals)/appointment"
         options={{

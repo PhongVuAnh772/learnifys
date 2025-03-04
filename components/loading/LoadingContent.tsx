@@ -41,11 +41,11 @@ export const LoadingContentProvider: React.FC<LoadingContentProviderProps> = ({
       value={{ showLoadingContent, hideLoadingContent }}
     >
       {children}
-      {loading && (
+      {/* {loading && (
         <Animated.View style={styles.overlay} entering={FadeInUp}>
           <ActivityIndicatorPaper color="white" animating={true} size="small" />
         </Animated.View>
-      )}
+      )} */}
     </LoadingContentContext.Provider>
   );
 };
