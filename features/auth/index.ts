@@ -44,31 +44,97 @@ export const useAuthViewModel = (
   redirectTo: any
 ) => {
   const [confirm, setConfirm] = useState(null);
-  const [loginEmail, setLoginEmail] = useState('')
-  const [loginPassword, setLoginPassword] = useState('')
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
 
-  const [registerEmail, setRegisterEmail] = useState('')
+  const loginWithBackendOAuth = async (email: string) => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/login-with-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
-  const [registerPassword, setRegisterPassword] = useState('')
+      const result = await response.json();
+      if (result?.result) {
+        console.log("OAuth backend login success", result.data);
+      } else {
+        console.log(
+          "OAuth backend login failed",
+          result.messageEN || result.messageVI
+        );
+      }
+    } catch (err) {
+      console.error("Error calling backend OAuth login:", err);
+    }
+  };
 
+  const loginWithBackendAPI = async () => {
+    showLoadingContent();
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: loginEmail,
+          password: loginPassword,
+        }),
+      });
+
+      const result = await response.json();
+      hideLoadingContent();
+
+      if (result?.result) {
+        Toast.show({
+          type: "success",
+          text1: "Đăng nhập thành công!",
+        });
+        console.log("Backend login success", result.data);
+        router.replace("/home"); // Chuyển sang trang chính
+      } else {
+        Toast.show({
+          type: "error",
+          text1: result?.messageVI || "Đăng nhập thất bại!",
+        });
+      }
+    } catch (error) {
+      hideLoadingContent();
+      console.error("Backend login error:", error);
+      Toast.show({
+        type: "error",
+        text1: "Có lỗi xảy ra!",
+      });
+    }
+  };
 
   const createSessionFromUrl = async (url: string) => {
     const { params, errorCode } = QueryParams.getQueryParams(url);
-
     if (errorCode) throw new Error(errorCode);
     const { access_token, refresh_token } = params;
-
     if (!access_token) return;
 
     const { data, error } = await supabase.auth.setSession({
       access_token,
       refresh_token,
     });
-    createUserToDataBase(data);
+
+    if (error) throw error;
+
+    await createUserToDataBase(data);
+    await loginWithBackendOAuth(data?.user?.email ?? "");
     setTimeout(() => {
       hide();
     }, 1500);
-    if (error) throw error;
+
     return data.session;
   };
 
@@ -77,41 +143,42 @@ export const useAuthViewModel = (
   };
 
   async function signUpWithCommonAuth() {
+    showLoadingContent();
     const { data, error } = await supabase.auth.signUp({
       email: registerEmail,
       password: registerPassword,
     });
-    showLoadingContent()
     if (error !== null) {
-      hideLoadingContent()
+      hideLoadingContent();
       Toast.show({
-        type: 'error',
-        text1: 'Đăng ký thất bại,hãy thử lại',
+        type: "error",
+        text1: "Đăng ký thất bại, hãy thử lại",
       });
-      console.log(error)
+      console.log(error);
       return;
     }
-    createUserToDataBase(data)
-    hideLoadingContent()
-    console.log(data)
+    await createUserToDataBase(data);
+    hideLoadingContent();
   }
+
   async function signInWithCommonAuth() {
-    showLoadingContent()
+    showLoadingContent();
     const { data, error } = await supabase.auth.signInWithPassword({
       email: loginEmail,
       password: loginPassword,
     });
     if (error !== null) {
-      hideLoadingContent()
+      hideLoadingContent();
       Toast.show({
-        type: 'error',
-        text1: 'Đăng nhập thất bại, hãy thử lại',
+        type: "error",
+        text1: "Đăng nhập thất bại, hãy thử lại",
       });
       return;
     }
-    console.log(data)
-    hideLoadingContent()
+    console.log(data);
+    hideLoadingContent();
   }
+
   async function signInWithFacebook() {
     show("login-loading-title", "login-loading-description", loginSticker);
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -121,12 +188,14 @@ export const useAuthViewModel = (
         skipBrowserRedirect: true,
       },
     });
+
     if (error !== null) {
       hide();
       Toast.show({
-        type: 'error',
-        text1: 'Đăng nhập thất bại,hãy thử lại',
+        type: "error",
+        text1: "Đăng nhập thất bại, hãy thử lại",
       });
+      return;
     }
 
     const res = await WebBrowser.openAuthSessionAsync(
@@ -135,9 +204,7 @@ export const useAuthViewModel = (
     );
 
     if (res.type === "success") {
-      const { url } = res;
-
-      await createSessionFromUrl(url);
+      await createSessionFromUrl(res.url);
     }
   }
 
@@ -146,24 +213,15 @@ export const useAuthViewModel = (
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log("userInfo", userInfo);
-
-      // if (userInfo.data?.idToken) {
-      //   const { data, error } = await supabase.auth.signInWithIdToken({
-      //     provider: "google",
-      //     token: userInfo.data?.idToken,
-      //   });
-
-      //   console.log(error, data);
-      //   console.log(userInfo.data?.idToken);
-      // } else {
-      //   throw new Error("no ID token present!");
-      // }
+      // Bạn có thể lấy idToken và gọi API nếu muốn
     } catch (error) {
-      throw new Error("no ID token present!");
+      console.error("Google login error:", error);
+      Toast.show({
+        type: "error",
+        text1: "Đăng nhập Google thất bại",
+      });
     }
   };
-
-
 
   const createUserToDataBase = async (dataUser: any) => {
     if (!dataUser?.user?.email) {
@@ -210,7 +268,6 @@ export const useAuthViewModel = (
     return newUser;
   };
 
-
   const performOAuthWithGithub = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
@@ -219,8 +276,14 @@ export const useAuthViewModel = (
         skipBrowserRedirect: true,
       },
     });
-    console.log(data);
-    if (error) throw error;
+
+    if (error) {
+      Toast.show({
+        type: "error",
+        text1: "Đăng nhập GitHub thất bại",
+      });
+      return;
+    }
 
     const res = await WebBrowser.openAuthSessionAsync(
       data?.url ?? "",
@@ -254,6 +317,7 @@ export const useAuthViewModel = (
     loginEmail,
     loginPassword,
     registerEmail,
-    registerPassword
+    registerPassword,
+    loginWithBackendAPI,
   };
 };

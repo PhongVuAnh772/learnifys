@@ -2,17 +2,18 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgres
+    image: postgres:latest # Bạn có thể chỉ định phiên bản PostgreSQL cụ thể nếu cần
     container_name: my-postgres
     restart: always
     environment:
-      POSTGRES_USER: phandat
-      POSTGRES_PASSWORD: admin12345
-      POSTGRES_DB: e-learning
+      POSTGRES_USER: postgres # Tên người dùng PostgreSQL
+      POSTGRES_PASSWORD: 22092002 # Mật khẩu người dùng
+      POSTGRES_DB: learnify # Tên cơ sở dữ liệu bạn muốn tạo
     ports:
-      - "5432:5432"
+      - "5432:5432" # Kết nối từ máy chủ của bạn đến container
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data # Dữ liệu sẽ được lưu trữ trong volume này
 
 volumes:
   postgres_data:
+    driver: local

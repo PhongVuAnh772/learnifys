@@ -16,6 +16,7 @@ import { Strategy, useAuthViewModel } from "@/features/auth";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
+import Toast from "react-native-toast-message";
 WebBrowser.maybeCompleteAuthSession();
 
 interface Props {
@@ -68,6 +69,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
     setLoginPassword,
     loginEmail,
     loginPassword,
+    loginWithBackendAPI,
   } = useAuthViewModel(
     show,
     hide,
@@ -91,7 +93,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
         overlayDescription="overlay-login"
       >
         <SearchBar
-          placeholder={'Hãy nhập Email của bạn'}
+          placeholder={"Hãy nhập Email của bạn"}
           keyboardType="default"
           color="white"
           value={loginEmail}
@@ -123,18 +125,22 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             marginBottom: 10,
           }}
           mode="contained"
-          onPress={signInWithCommonAuth}
+          onPress={() => {
+            if (loginEmail && loginPassword) {
+              loginWithBackendAPI();
+            } else {
+              Toast.show({
+                type: "error",
+                text1: "Vui lòng nhập đầy đủ email và mật khẩu",
+              });
+            }
+          }}
           textColor="white"
         >
           {i18n.t("continue")}
         </PrimaryButton>
 
-        <View
-          style={[
-            styles.wrapSocial,
-            { alignItems: 'center' }
-          ]}
-        >
+        <View style={[styles.wrapSocial, { alignItems: "center" }]}>
           <View style={[styles.separator]} />
           <Text style={styles.separatorText}>{i18n.t("or")}</Text>
           <View style={[styles.separator]} />
@@ -186,8 +192,6 @@ const Login: React.FC<Props> = ({ name, counting }) => {
           <Text style={{ color: "black" }}>{i18n.t("register")}</Text>
         </PrimaryButton>
       </Greeting>
-
-
     </>
   );
 };
@@ -221,7 +225,7 @@ const styles = StyleSheet.create({
     color: "#DADCE0",
     fontFamily: "quicksand-bold",
     marginBottom: 5,
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
   logo: {
     width: 24,
