@@ -52,7 +52,7 @@ export const useAuthViewModel = (
   const loginWithBackendOAuth = async (email: string) => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/login-with-token",
+        "http://127.0.0.1:5000/api/login-with-token",
         {
           method: "POST",
           headers: {
@@ -79,7 +79,7 @@ export const useAuthViewModel = (
   const loginWithBackendAPI = async () => {
     showLoadingContent();
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://127.0.0.1:5000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,6 +92,7 @@ export const useAuthViewModel = (
 
       const result = await response.json();
       hideLoadingContent();
+      console.log("loginWithBackendAPI", result);
 
       if (result?.result) {
         Toast.show({
