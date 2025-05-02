@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 200,
     alignItems: "center",
-    marginTop:'30%'
+    marginTop: "10%",
   },
   wrapper: {},
   slide: {
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     resizeMode: "contain",
-    height: '100%',
+    height: "100%",
     borderRadius: 12,
   },
 });
@@ -62,7 +62,6 @@ export default class SwiperHome extends Component {
             contentFit="cover"
             transition={1000}
           />
-          
         </Swiper>
       </View>
     );

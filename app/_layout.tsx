@@ -118,11 +118,8 @@ export default function RootLayout() {
           </BottomSheetModalProvider>
         </GestureHandlerRootView>
       </Provider>
-      <Toast
-        config={ToastConfig}
-        position="bottom"
-        visibilityTime={3000}
-      /></>
+      <Toast config={ToastConfig} position="bottom" visibilityTime={3000} />
+    </>
   );
 }
 
@@ -130,7 +127,14 @@ function RootLayoutNav() {
   const router = useRouter();
 
   return (
-    <Stack initialRouteName="(modals)/loading">
+    <Stack
+      initialRouteName="(modals)/loading"
+      screenOptions={{
+        title: i18n.t("login-title"),
+        animation: "none",
+        headerShown: false,
+      }}
+    >
       <Stack.Screen
         name="(modals)/loading"
         options={{
@@ -147,6 +151,7 @@ function RootLayoutNav() {
           headerShown: false,
         }}
       />
+
       <Stack.Screen
         name="(teacher)/(tabs)"
         options={{
@@ -492,7 +497,7 @@ function RootLayoutNav() {
           headerStyle: {
             backgroundColor: "rgb(241, 243, 244)",
           },
-          headerRight: () => <ButtonAdd navigation={() => { }} />,
+          headerRight: () => <ButtonAdd navigation={() => {}} />,
         }}
       />
       <Stack.Screen

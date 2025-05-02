@@ -1,7 +1,7 @@
 import { useLoadingContent } from "@/components/loading/LoadingContent";
+import { commonEnum } from "@/enum/keymap";
 import { storage } from "@/mmkv";
-import { supabase } from "@/supabase";
-import { Session, User } from "@supabase/supabase-js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SplashScreen, useRouter, usePathname } from "expo-router";
 import React, {
   createContext,
@@ -9,74 +9,113 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import axios from "axios";
 
 type AuthProps = {
-  user: User | null;
-  session: Session | null;
+  user: any | null;
+  session: any | null;
   initialized?: boolean;
   signOut?: () => void;
   role: string;
   spicifiedInformation: any;
-  authStateChecking: () => void
+  authStateChecking: () => void;
 };
 
 export const AuthContext = createContext<Partial<AuthProps>>({});
 
-// Custom hook to read the context values
 export function useAuth() {
   return React.useContext(AuthContext);
 }
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>();
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<any | null>(null);
+  const [session, setSession] = useState<any | null>(null);
   const [spicifiedInformation, setSpicifiedInformation] = useState(null);
   const [initialized, setInitialized] = useState<boolean>(false);
   const [role, setRole] = useState("");
   const pathname = usePathname();
   const { showLoadingContent, hideLoadingContent } = useLoadingContent();
+
   useEffect(() => {
-    showLoadingContent();
-    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session);
-      setUser(session ? session.user : null);
-      setInitialized(true);
-    });
-    return () => {
-      data.subscription.unsubscribe();
-    };
-  }, []);
+    const getData = async () => {
+      showLoadingContent();
 
-  const authStateChecking = async () => {
-    if (session) {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("email", session.user?.user_metadata?.email);
+      const userData = await AsyncStorage.getItem("userData");
 
-      if (data && data.length > 0) {
-        setSpicifiedInformation(data as any);
-        setRole(data[0].role);
-        getNavigation(data[0].role as any);
+      if (userData) {
+        const parsedUserData = JSON.parse(userData);
+        const token = parsedUserData?.token;
+        console.log(token, "token âsdfa");
+        fetchUserProfile(token);
       } else {
+        setInitialized(true);
         hideLoadingContent();
         router.replace("/(modals)/login");
       }
-    } else {
-      hideLoadingContent();
+    };
+    getData();
+  }, []);
+
+  const fetchUserProfile = async (token: string) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/api/login-with-token",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = response.data;
+      console.log(data, "data");
+
+      setSession({ token });
+      setUser(data.data);
+      setSpicifiedInformation(data.data);
+      setRole(data.data.roleId);
+      getNavigation(data.data.roleId);
+    } catch (err: any) {
+      console.error("Failed to fetch user profile", err?.response?.data || err);
+      storage.delete("userData");
       router.replace("/(modals)/login");
+    } finally {
+      setInitialized(true);
+      hideLoadingContent();
     }
-  }
+  };
+
+  const authStateChecking = async () => {
+    const userData = await AsyncStorage.getItem("userData");
+    if (userData) {
+      const parsedUserData = JSON.parse(userData);
+      const token = parsedUserData?.token;
+      if (!token) {
+        router.replace("/(modals)/login");
+        return;
+      }
+
+      await fetchUserProfile(token);
+    }
+  };
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
-      setUser(null);
-      setSession(null);
-      router.replace("/(modals)/login");
+      const token = storage.getString("userData");
+      if (token) {
+        await fetch("https://your-backend.com/api/auth/logout", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Logout error:", error);
+    } finally {
+      storage.delete("access_token");
       setUser(null);
       setSession(null);
       router.replace("/(modals)/login");
@@ -85,34 +124,24 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const getNavigation = (roleData: string) => {
     if (!roleData) {
-      router.replace("choosing" as any);
-      hideLoadingContent();
-      SplashScreen.hideAsync();
-      return;
-    }
-
-    if (!session) {
-      router.replace("/(modals)/login");
-      hideLoadingContent();
-      SplashScreen.hideAsync();
-      return;
+      router.replace("/choosing");
     }
 
     switch (roleData) {
-      case "student":
-        router.replace("(student)/(tabs)" as any);
+      case commonEnum.roleId.STUDENT:
+        router.replace("/(student)/(tabs)");
         break;
-      case "teacher":
-        router.replace("(teacher)/(tabs)" as any);
+      case commonEnum.roleId.TEACHER:
+        router.replace("/(teacher)/(tabs)");
         break;
-      case "admin":
-        router.replace("(admin)/(tabs)" as any);
+      case commonEnum.roleId.ADMIN:
+        router.replace("/(admin)");
         break;
-      case "parent":
-        router.replace("(parents)/(tabs)" as any);
+      case commonEnum.roleId.PARENTS:
+        router.replace("/(parents)/(tabs)");
         break;
       default:
-        router.replace("choosing");
+        router.replace("/choosing");
     }
 
     hideLoadingContent();
@@ -122,7 +151,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (!initialized) return;
     if (!session) {
-      router.replace('/onboarding');
+      router.replace("/onboarding");
     }
   }, [initialized, session]);
 
@@ -133,7 +162,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     signOut,
     role,
     spicifiedInformation,
-    authStateChecking
+    authStateChecking,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -4,31 +4,42 @@ import { persistReducer, persistStore } from "redux-persist";
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { appMiddleware } from "@/redux/middlewares/app.middleware";
-import { createBlacklistFilter, createFilter } from "redux-persist-transform-filter";
-import {authReducer} from "@/redux/slices/auth.slice";
+import {
+  createBlacklistFilter,
+  createFilter,
+} from "redux-persist-transform-filter";
+import { authReducer } from "@/redux/slices/auth.slice";
+import studentReducer from "@/controller/admin/student/slice";
+import adminExamReducer from "@/controller/admin/exams/slice";
+import adminQuestionReducer from "@/controller/admin/question/slice";
 
 const reducers = combineReducers({
   auth: authReducer,
+  admin: studentReducer,
+  adminExam: adminExamReducer,
+  adminQuestion: adminQuestionReducer,
 });
 
-const persistedReducer = persistReducer<ReturnType<typeof reducers>>({
-  key: "root",
-  storage: AsyncStorage,
-  stateReconciler: autoMergeLevel2,
-  whitelist: ['auth'],
-  
-}, reducers);
+const persistedReducer = persistReducer<ReturnType<typeof reducers>>(
+  {
+    key: "root",
+    storage: AsyncStorage,
+    stateReconciler: autoMergeLevel2,
+    whitelist: ["auth"],
+  },
+  reducers
+);
 
 export const store = configureStore({
   reducer: reducers,
-  middleware: getDefaultMiddleware =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
       immutableCheck: false,
-    })
+    }),
 });
 
-export const persistor = (store);
+export const persistor = store;
 
 export type RootState = ReturnType<typeof store.getState>;
 

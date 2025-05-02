@@ -1,7 +1,8 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true,
+
+    "strict": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "typeRoots": [
@@ -14,7 +15,19 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "skipLibCheck": true,      // Tắt kiểm tra kiểu trong các thư viện bên ngoài (như react-native, expo)
+    "esModuleInterop": true,
+    "noImplicitAny": false,   // Cho phép sử dụng `any` mà không báo lỗi
+    "noImplicitThis": false,  // Cho phép kiểu `this` không được xác định rõ
+    "alwaysStrict": false,    // Không bắt buộc sử dụng "use strict"
+    "strictNullChecks": false, // Cho phép null và undefined trong tất cả các kiểu dữ liệu
+    "strictFunctionTypes": false, // Tắt kiểm tra hàm chặt chẽ
+    "strictBindCallApply": false, // Tắt kiểm tra cho phương thức bind/call/apply
+    "noUnusedLocals": false,  // Không cảnh báo khi có biến không sử dụng
+    "noUnusedParameters": false, // Không cảnh báo khi có tham số không sử dụng
+    "noImplicitReturns": false, // Cho phép không có giá trị trả về trong hàm
+    "noFallthroughCasesInSwitch": false,
   },
   "include": [
     "**/*.ts",

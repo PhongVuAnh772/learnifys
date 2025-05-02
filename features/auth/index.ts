@@ -15,6 +15,8 @@ import * as WebBrowser from "expo-web-browser";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import { storage } from "@/mmkv";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { commonEnum } from "@/enum/keymap";
 
 export enum Strategy {
   Google = "oauth_google",
@@ -44,10 +46,12 @@ export const useAuthViewModel = (
   redirectTo: any
 ) => {
   const [confirm, setConfirm] = useState(null);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [registerEmail, setRegisterEmail] = useState("");
-  const [registerPassword, setRegisterPassword] = useState("");
+  const [loginEmail, setLoginEmail] = useState("Vuanhphong2209@gmail.com");
+  const [loginPassword, setLoginPassword] = useState("22092002");
+  const [registerEmail, setRegisterEmail] = useState(
+    "Vuanhphong2209@gmail.com"
+  );
+  const [registerPassword, setRegisterPassword] = useState("22092002");
 
   const loginWithBackendOAuth = async (email: string) => {
     try {
@@ -92,15 +96,17 @@ export const useAuthViewModel = (
 
       const result = await response.json();
       hideLoadingContent();
-      console.log("loginWithBackendAPI", result);
 
       if (result?.result) {
         Toast.show({
           type: "success",
           text1: "Đăng nhập thành công!",
         });
+
+        await AsyncStorage.setItem("userData", JSON.stringify(result));
+
         console.log("Backend login success", result.data);
-        router.replace("/home"); // Chuyển sang trang chính
+        router.replace("(admin)");
       } else {
         Toast.show({
           type: "error",
@@ -145,21 +151,44 @@ export const useAuthViewModel = (
 
   async function signUpWithCommonAuth() {
     showLoadingContent();
-    const { data, error } = await supabase.auth.signUp({
-      email: registerEmail,
-      password: registerPassword,
-    });
-    if (error !== null) {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: registerEmail,
+          password: registerPassword,
+          roleId: commonEnum.roleId.ADMIN,
+          language: "vi",
+        }),
+      });
+
+      const result = await response.json();
       hideLoadingContent();
+
+      if (result?.result) {
+        Toast.show({
+          type: "success",
+          text1: "Đăng ký thành công! Vui lòng đăng nhập lại",
+        });
+        console.log("Backend login success", result.data);
+        router.back();
+      } else {
+        Toast.show({
+          type: "error",
+          text1: result?.messageVI || "Đăng nhập thất bại!",
+        });
+      }
+    } catch (error) {
+      hideLoadingContent();
+      console.error("Backend login error:", error);
       Toast.show({
         type: "error",
-        text1: "Đăng ký thất bại, hãy thử lại",
+        text1: "Có lỗi xảy ra!",
       });
-      console.log(error);
-      return;
     }
-    await createUserToDataBase(data);
-    hideLoadingContent();
   }
 
   async function signInWithCommonAuth() {
@@ -181,31 +210,39 @@ export const useAuthViewModel = (
   }
 
   async function signInWithFacebook() {
-    show("login-loading-title", "login-loading-description", loginSticker);
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "facebook",
-      options: {
-        redirectTo: redirectTo,
-        skipBrowserRedirect: true,
-      },
-    });
+    try {
+      show("login-loading-title", "login-loading-description", loginSticker);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "facebook",
+        options: {
+          redirectTo: redirectTo,
+          skipBrowserRedirect: true,
+        },
+      });
 
-    if (error !== null) {
+      if (error !== null) {
+        hide();
+        Toast.show({
+          type: "error",
+          text1: "Đăng nhập thất bại, hãy thử lại",
+        });
+        return;
+      }
+
+      const res = await WebBrowser.openAuthSessionAsync(
+        data?.url ?? "",
+        redirectTo
+      );
+
+      if (res.type === "success") {
+        await createSessionFromUrl(res.url);
+      }
+    } catch {
       hide();
       Toast.show({
         type: "error",
-        text1: "Đăng nhập thất bại, hãy thử lại",
+        text1: "Đăng nhập thất bại!",
       });
-      return;
-    }
-
-    const res = await WebBrowser.openAuthSessionAsync(
-      data?.url ?? "",
-      redirectTo
-    );
-
-    if (res.type === "success") {
-      await createSessionFromUrl(res.url);
     }
   }
 
@@ -214,7 +251,6 @@ export const useAuthViewModel = (
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log("userInfo", userInfo);
-      // Bạn có thể lấy idToken và gọi API nếu muốn
     } catch (error) {
       console.error("Google login error:", error);
       Toast.show({

@@ -9,19 +9,15 @@ import { useAppSelector } from "@/redux/store";
 import { useAuth } from "@/auth/ctx";
 import TimelineCalendarScreen from "@/screens/calendars";
 const Page = () => {
-  const [category, setCategory] = useState<string>("Tiny homes");
-  const onDataChanged = (category: string) => {
-    setCategory(category);
-  };
-  const {user} = useAuth()
+  const { user } = useAuth();
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
-      <ExploreHeader avatar_url={user?.user_metadata?.avatar_url} name={user?.user_metadata?.full_name} counting={15} />
+      <ExploreHeader
+        avatar_url={user?.user_metadata?.avatar_url}
+        name={user?.user_metadata?.full_name}
+        counting={15}
+      />
       <SwiperHome />
-      <TodayStatistics />
-      <TodayAppointment />
-                        <TimelineCalendarScreen />
-
     </ScrollView>
   );
 };

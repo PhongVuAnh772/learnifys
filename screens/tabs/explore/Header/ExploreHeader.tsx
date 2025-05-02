@@ -33,15 +33,15 @@ const ExploreHeader: React.FC<Props> = ({ avatar_url, name, counting }) => {
   };
   const getCurrentGreeting = useCallback(() => {
     const currentHour = new Date().getHours();
-    
+
     if (currentHour < 12) {
-      return i18n.t('good-morning');
+      return i18n.t("good-morning");
     } else if (currentHour < 18) {
-      return i18n.t('good-afternoon');
+      return i18n.t("good-afternoon");
     } else {
-      return i18n.t('good-evening');
+      return i18n.t("good-evening");
     }
-  },[]);
+  }, []);
   return (
     <ImageBackground
       style={styles.container}
@@ -86,7 +86,6 @@ const ExploreHeader: React.FC<Props> = ({ avatar_url, name, counting }) => {
               maxLength={10}
               icon={searchIcon}
             />
-            <ActionRow />
           </View>
         </View>
       </SafeAreaView>

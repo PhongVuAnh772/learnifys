@@ -64,7 +64,10 @@ const Login: React.FC<Props> = ({ name, counting }) => {
     signInWithFacebook,
     signUpWithCommonAuth,
     handlePositionNavigate,
-    setRegisterEmail, setRegisterPassword, registerEmail, registerPassword
+    setRegisterEmail,
+    setRegisterPassword,
+    registerEmail,
+    registerPassword,
   } = useAuthViewModel(
     show,
     hide,
@@ -81,24 +84,15 @@ const Login: React.FC<Props> = ({ name, counting }) => {
 
   return (
     <>
-
       <Greeting
         title="register"
         description="greeting-register"
         otherDescription="invite-register"
         overlayDescription="overlay-register"
+        backAction
       >
-        <Pressable style={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          width: 32,
-          height: 32,
-        }}>
-          <Ionicons name="checkmark-circle" size={32} color="white" />
-        </Pressable>
         <SearchBar
-          placeholder={i18n.t("your-phone")}
+          placeholder={"Hãy nhập Email của bạn"}
           keyboardType="default"
           color="white"
           value={registerEmail}
@@ -150,12 +144,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
         >
           {i18n.t("edit-position")}
         </PrimaryButton>
-        <View
-          style={[
-            styles.wrapSocial,
-            { gap: 15, alignItems: "center" },
-          ]}
-        >
+        <View style={[styles.wrapSocial, { gap: 15, alignItems: "center" }]}>
           <View style={[styles.separator]} />
           <Text style={styles.separatorText}>{i18n.t("or")}</Text>
           <View style={[styles.separator]} />
@@ -192,9 +181,7 @@ const Login: React.FC<Props> = ({ name, counting }) => {
             {renderButtonContent(Strategy.Google, googleLogo)}
           </Pressable>
         </View>
-
       </Greeting>
-
     </>
   );
 };

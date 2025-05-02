@@ -40,6 +40,12 @@ class systemController {
         process.env.ACCESS_TOKEN_SECRET
       );
 
+      console.log(token, "token");
+      console.log(
+        process.env.ACCESS_TOKEN_SECRET,
+        "process.env.ACCESS_TOKEN_SECRET"
+      );
+
       return res.status(200).json({
         result: true,
         messageEN: "Login successfully",
@@ -67,7 +73,7 @@ class systemController {
 
   handleLoginWithToken = async (req, res) => {
     try {
-      let user = await userService.getUserByUserId(req.userId);
+      const user = await userService.getUserByUserId(req.userId);
       if (!user) {
         return res.status(200).json({
           result: false,
@@ -75,6 +81,13 @@ class systemController {
           messageVI: "Tài khoản này không tồn tại",
         });
       }
+
+      const token = jwt.sign(
+        { userId: user.id, roleId: user.roleId },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "1d" }
+      );
+
       return res.status(200).json({
         result: true,
         messageEN: "Login successfully",
@@ -91,10 +104,10 @@ class systemController {
         },
       });
     } catch (error) {
-      return res.status(400).json({
+      console.error("Login with token error:", error);
+      return res.status(500).json({
         result: false,
         message: "Có lỗi từ phía server",
-        // error: error.message
       });
     }
   };
@@ -102,6 +115,7 @@ class systemController {
   handleRegisterAccount = async (req, res) => {
     try {
       let { email, password, roleId, language } = req.body;
+      console.log(email, password, roleId, language);
       if (!email || !password || !roleId) {
         return res.status(200).json({
           result: false,

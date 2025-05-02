@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, ReactNode, memo } from "react";
@@ -16,6 +17,7 @@ import i18n from "@/translations";
 import logoIcon from "@/assets/logo/logo.png";
 import { blurhash } from "@/constants/BlurHash";
 import { useTranslation } from "react-i18next";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 interface Props {
   title: string;
@@ -23,15 +25,17 @@ interface Props {
   overlayDescription?: string;
   children?: ReactNode;
   otherDescription?: string;
+  backAction?: boolean;
 }
 const Greeting = ({
   title,
   description,
   overlayDescription,
   otherDescription,
+  backAction,
   children,
 }: Props) => {
-   
+  const router = useRouter();
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -40,6 +44,20 @@ const Greeting = ({
       <View style={styles.container}>
         <ImageBackground style={styles.imageBackground} source={background} />
         <View style={styles.overlayHeader}>
+          {backAction && (
+            <Pressable
+              style={{
+                position: "absolute",
+                top: 78,
+                left: 15,
+                width: 32,
+                height: 32,
+              }}
+              onPress={() => router.back()}
+            >
+              <AntDesign name="arrowleft" size={28} color="white" />
+            </Pressable>
+          )}
           <Text style={styles.title}>{i18n.t(title)}</Text>
           <View style={{ gap: 5 }}>
             <Text style={styles.description}>{i18n.t(description)}</Text>
@@ -57,10 +75,12 @@ const Greeting = ({
             contentFit="fill"
             transition={1000}
           />
-          
-          {overlayDescription && <Text style={styles.overlayDescription}>
-            {i18n.t(overlayDescription)}
-          </Text>}
+
+          {overlayDescription && (
+            <Text style={styles.overlayDescription}>
+              {i18n.t(overlayDescription)}
+            </Text>
+          )}
 
           {children}
         </View>
