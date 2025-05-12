@@ -143,16 +143,10 @@ class systemController {
           messageVI: "Tạo mới tài khoản thất bại",
         });
       }
-      emailService.sendEmailRegister({
-        receiverEmail: email,
-        language: language ? language : keyMap.VI,
-      });
       return res.status(200).json({
         result: true,
-        messageEN:
-          "Register successfully, Please check your email to complete the registration procedure",
-        messageVI:
-          "Tạo tài khoản thành công, vui lòng check email để hoàn thành thủ tục đăng ký",
+        messageEN: "Register successfully",
+        messageVI: "Tạo tài khoản thành công",
       });
     } catch (error) {
       return res.status(400).json({
@@ -166,6 +160,7 @@ class systemController {
   handleRegisterAccountInformation = async (req, res) => {
     try {
       let { firstName, lastName, email, genderId, phoneNumber } = req.body;
+      console.log(firstName, lastName, email, genderId, phoneNumber);
       if (!firstName || !lastName || !email || !genderId || !phoneNumber) {
         return res.status(200).json({
           result: false,

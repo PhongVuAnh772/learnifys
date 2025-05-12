@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,45 +11,75 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { deleteOneExam, fetchAllExams } from "@/controller/admin/exams/slice";
+import axiosInstance from "@/controller/admin/student/axios";
+import { useFocusEffect } from "@react-navigation/native";
+import { useAuth } from "@/auth/ctx";
 
 interface ExamItem {
   id: number;
   name: string;
-  subject: string;
-  date: string;
+  description: string;
+  dateFinish: string;
+  timeLimit: string;
+  classId: number;
+  teacherId: number;
+  statusId: string;
+  typeId: string;
+  dateUpload: string;
+  createdAt: string;
 }
 
 export default function AdminExamScreen() {
-  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
   const [search, setSearch] = useState("");
+  const [exams, setExams] = useState<ExamItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const { exams, status, error } = useSelector(
-    (state: RootState) => state.admin
-  );
-
-  useEffect(() => {
-    dispatch(fetchAllExams());
-  }, [dispatch]);
+  const fetchExams = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/get-all-exam");
+      if (response.data?.result) {
+        setExams(response.data.data);
+        setError(null);
+      } else {
+        setError("Không thể lấy danh sách bài thi");
+      }
+    } catch (err: any) {
+      setError(err.message || "Lỗi khi tải bài thi");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const handleDelete = (id: number) => {
     Alert.alert("Xác nhận", "Bạn có chắc muốn xóa bài thi này?", [
-      { text: "Hủy" },
+      { text: "Hủy", style: "cancel" },
       {
         text: "Xóa",
         style: "destructive",
         onPress: async () => {
-          dispatch(deleteOneExam(id));
+          try {
+            await axiosInstance.delete("/delete-one-exam", {
+              params: { examId: id },
+            });
+            setExams((prev) => prev.filter((exam) => exam.id !== id));
+            Alert.alert("Đã xóa bài thi");
+          } catch (err: any) {
+            Alert.alert("Lỗi", err.message || "Không thể xóa bài thi");
+          }
         },
       },
     ]);
   };
+  useFocusEffect(
+    useCallback(() => {
+      fetchExams();
+    }, [fetchExams])
+  );
 
-  const filtered = exams.filter((exam: ExamItem) =>
+  const filtered = exams.filter((exam) =>
     exam.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -85,7 +115,7 @@ export default function AdminExamScreen() {
           }}
         />
 
-        {status === "loading" ? (
+        {loading ? (
           <ActivityIndicator size="large" style={{ marginTop: 50 }} />
         ) : (
           <FlatList
@@ -111,10 +141,13 @@ export default function AdminExamScreen() {
                   {item.name}
                 </Text>
                 <Text style={{ color: "#666", marginTop: 4 }}>
-                  Môn học: {item.subject}
+                  Mô tả: {item.description}
                 </Text>
                 <Text style={{ color: "#666", marginTop: 4 }}>
-                  Ngày thi: {item.date}
+                  Ngày kết thúc: {item.dateFinish}
+                </Text>
+                <Text style={{ color: "#666", marginTop: 4 }}>
+                  Thời gian làm bài: {item.timeLimit} phút
                 </Text>
 
                 <View
@@ -126,7 +159,12 @@ export default function AdminExamScreen() {
                   }}
                 >
                   <TouchableOpacity
-                    onPress={() => router.push(`/admin-exam-edit/${item.id}`)}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/admin-exam-edit/[id]",
+                        params: { id: item.id.toString() },
+                      })
+                    }
                   >
                     <Ionicons name="create-outline" size={22} color="#007AFF" />
                   </TouchableOpacity>

@@ -4,12 +4,18 @@ import ReportIcon from "@/components/tab-icons/ReportIcon";
 import SettingIcon from "@/components/tab-icons/SettingIcon";
 import HomeIcon from "@/components/tab-icons/homeIcon";
 import Colors from "@/constants/Colors";
+import { connectChatSocket, connectNotifySocket } from "@/socket";
 import i18n from "@/translations";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Layout = () => {
+  useEffect(() => {
+    connectNotifySocket();
+    connectChatSocket();
+  }, []);
   return (
     <React.Fragment>
       <Tabs
@@ -25,40 +31,27 @@ const Layout = () => {
           options={{
             tabBarLabel: i18n.t("home-tab"),
             tabBarIcon: ({ size, color, focused }) => (
-              <HomeIcon size={size} color={color} focused={focused} />
+              <MaterialCommunityIcons
+                name="home-variant"
+                size={size}
+                color={color}
+              />
             ),
             headerShown: false,
           }}
         />
-        <Tabs.Screen
-          name="favorite"
-          options={{
-            tabBarLabel: i18n.t("report-tab"),
-            tabBarIcon: ({ size, color, focused }) => (
-              <ReportIcon size={size} color={color} focused={focused} />
-            ),
-          }}
-        />
+
         <Tabs.Screen
           name="explore"
           options={{
-            tabBarLabel: i18n.t("location-children"),
+            tabBarLabel: "Học tập của con",
             tabBarIcon: ({ size, color, focused }) => (
               <OrderIcon size={size} color={color} focused={focused} />
             ),
             headerShown: false,
           }}
         />
-        <Tabs.Screen
-          name="message"
-          options={{
-            tabBarLabel: i18n.t("zoom-title"),
-            tabBarIcon: ({ size, color, focused }) => (
-              <AntDesign name="wechat" size={size} color={color} />
-            ),
-            headerShown: false,
-          }}
-        />
+
         <Tabs.Screen
           name="user"
           options={{

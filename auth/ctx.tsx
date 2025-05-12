@@ -102,24 +102,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   const signOut = async () => {
-    try {
-      const token = storage.getString("userData");
-      if (token) {
-        await fetch("https://your-backend.com/api/auth/logout", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      storage.delete("access_token");
-      setUser(null);
-      setSession(null);
-      router.replace("/(modals)/login");
-    }
+    await AsyncStorage.removeItem("userData");
+    setUser(null);
+    setSession(null);
+    router.replace("/(modals)/login");
   };
 
   const getNavigation = (roleData: string) => {

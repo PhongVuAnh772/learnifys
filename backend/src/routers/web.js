@@ -9,6 +9,7 @@ const adminController = require("../controllers/adminController");
 const uploadImage = require("../middleware/handleSaveImage");
 const uploadDocument = require("../middleware/handleSaveDocuments");
 const userController = require("../controllers/userController");
+const examService = require("../services/examService");
 
 router.post("/login", systemController.handleLogin);
 router.post(
@@ -284,7 +285,7 @@ router.get(
   userController.getListClasOfStudentByParentsId
 );
 
-router.get("/get-all-users", checkAdmin, adminController.getAllUsers);
+router.get("/get-all-users", verifyToken, adminController.getAllUsers);
 router.delete("/delete-user-by-id", checkAdmin, adminController.deleteUserById);
 router.post(
   "/post-new-user-by-admin",
@@ -314,7 +315,7 @@ router.put(
 );
 router.delete("/delete-one-class", checkAdmin, adminController.deleteOneClass);
 
-router.get("/get-all-question", checkAdmin, adminController.getAllQuestion);
+router.get("/get-all-question", verifyToken, adminController.getAllQuestion);
 router.post(
   "/create-one-question",
   checkAdmin,
@@ -331,7 +332,7 @@ router.delete(
   adminController.deleteOneQuestion
 );
 
-router.get("/get-all-exam", checkAdmin, adminController.getServiceAllExam);
+router.get("/get-all-exam", verifyToken, adminController.getServiceAllExam);
 router.get(
   "/search-class-by-name",
   checkAdmin,
@@ -341,6 +342,56 @@ router.get(
   "/get-question-tearcher",
   checkAdmin,
   adminController.getQuestionsTeacher
+);
+
+router.get(
+  "/get-one-question-by-id",
+  verifyToken,
+  userController.getOneQuestionById
+);
+
+router.post(
+  "/create-new-exam-by-admin",
+  verifyToken,
+  adminController.createNewExamByAdmin
+);
+
+router.put(
+  "/update-exam-by-admin",
+  checkAdmin,
+  adminController.updateExamByAdmin
+);
+
+router.get(
+  "/get-class-of-student",
+  verifyToken,
+  userController.getClassOfStudent
+);
+
+router.post(
+  "/create-new-assignment-by-teacher",
+  checkTeacher,
+  examService.createNewAssignmentByTeacher
+);
+router.put(
+  "/update-assignment-by-teacher",
+  checkTeacher,
+  examService.updateAssignmentByTeacher
+);
+router.delete(
+  "/delete-assignment-by-teacher",
+  checkTeacher,
+  examService.deleteAssignmentByTeacher
+);
+router.put(
+  "/open-assignment-by-teacher",
+  checkTeacher,
+  userController.openAssignmentByTeacher
+);
+router.get(
+  "/get-review-result-of-assignment",
+  checkTeacher,
+  userController.getReviewResultOfAssignment
 );
 
 module.exports = router;

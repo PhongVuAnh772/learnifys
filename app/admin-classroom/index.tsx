@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { fetchAllClasses } from "@/controller/admin/student/slice";
 import { deleteOneClass } from "@/controller/admin/student/axios";
+import { showToast } from "@/helpers/ToastHelpers";
 
 interface ClassItem {
   id: number;
@@ -71,7 +72,14 @@ export default function AdminClassScreen() {
         style: "destructive",
         onPress: async () => {
           try {
-            await deleteOneClass(id);
+            const res = await deleteOneClass(id);
+            console.log(res.data, "res");
+            if (!res.data.result) {
+              showToast({
+                msg: "Xóa lớp thất bại, hãy thử lại",
+                type: "error",
+              });
+            }
             setClasses((prev) => prev.filter((cls) => cls.id !== id));
           } catch (err) {
             Alert.alert("Lỗi", "Không thể xóa lớp học.");
@@ -159,7 +167,12 @@ export default function AdminClassScreen() {
                   }}
                 >
                   <TouchableOpacity
-                    onPress={() => router.push(`/admin-class-edit/${item.id}`)}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/admin-class-edit/[id]",
+                        params: { id: item.id },
+                      })
+                    }
                   >
                     <Ionicons name="create-outline" size={22} color="#007AFF" />
                   </TouchableOpacity>

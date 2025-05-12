@@ -1,21 +1,40 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
-import ScreenHeader from "@/atoms/HeaderComponent";
-import i18n from "@/translations";
 import SearchBar from "@/components/Search/SearchBar";
 import { useLocalSearchParams } from "expo-router";
 import searchIcon from "@/assets/icons/search.png";
 import { FlashList } from "@shopify/flash-list";
-import { Facebook } from "react-content-loader";
 import { Image } from "expo-image";
 import { blurhash } from "@/constants/BlurHash";
-import { useTranslation } from "react-i18next";
+
 const Searching = () => {
   const params = useLocalSearchParams();
-  const agency = typeof params.agency === "string" ? params.agency : "";
-  const [searchValue, setSearchValue] = useState(agency);
-   
-  const handleEnterPress = () => {};
+  const keyword = typeof params.keyword === "string" ? params.keyword : "";
+  const [searchValue, setSearchValue] = useState(keyword);
+  const [results, setResults] = useState<any[]>([]);
+
+  const handleEnterPress = () => {
+    const mockData = [
+      {
+        id: 1,
+        avatar: "https://placekitten.com/80/80",
+        name: "Thầy Nguyễn Văn A",
+        phone: "0123456789",
+      },
+      {
+        id: 2,
+        avatar: "https://placekitten.com/81/81",
+        name: "Lớp Toán nâng cao 7A",
+        phone: "Không áp dụng",
+      },
+    ];
+    setResults(
+      mockData.filter((item) =>
+        item.name.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+  };
+
   const RenderItem = ({ item }: any) => (
     <View style={styles.outer}>
       <Image
@@ -28,35 +47,41 @@ const Searching = () => {
       />
       <View style={styles.textOuter}>
         <Text style={styles.name}>{item.name}</Text>
-         <Text style={styles.phone}>{item.phone}</Text>
+        <Text style={styles.phone}>{item.phone}</Text>
       </View>
     </View>
   );
+
   useEffect(() => {
-    if (typeof params.agency === "string") {
-      setSearchValue(params.agency);
+    if (keyword) {
+      setSearchValue(keyword);
+      handleEnterPress();
     }
   }, []);
 
   return (
     <View style={styles.container}>
       <SearchBar
-        placeholder={i18n.t("finding")}
-        keyboardType="numeric"
+        placeholder="Tìm kiếm lớp học hoặc giáo viên"
+        keyboardType="default"
         color="white"
         handleEnterPress={handleEnterPress}
         value={searchValue}
         setValue={setSearchValue}
-        maxLength={10}
+        maxLength={50}
         icon={searchIcon}
       />
-      <Text style={styles.title}>{i18n.t("searching-results")}</Text>
+      <Text style={styles.title}>Kết quả tìm kiếm</Text>
       <FlashList
-        data={params.response as any}
+        data={results}
         renderItem={({ item }) => <RenderItem item={item} />}
         estimatedItemSize={200}
         showsVerticalScrollIndicator={false}
-        // ListEmptyComponent={() => <Facebook />}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            Không có kết quả nào.
+          </Text>
+        }
       />
     </View>
   );
@@ -72,13 +97,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 16,
   },
-  header: {
-    paddingBottom: 10,
-  },
   title: {
     fontSize: 14,
     lineHeight: 19.6,
-    fontFamily: "quicksand-light",
+    fontFamily: "quicksand-bold",
   },
   outer: {
     width: "100%",
@@ -87,26 +109,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
     alignItems: "center",
-    flexDirection:"row",
+    flexDirection: "row",
     paddingHorizontal: 12,
-    gap: 10
+    gap: 10,
   },
   avatar: {
     height: 60,
     width: 76,
-    borderRadius: 12
+    borderRadius: 12,
   },
   textOuter: {
-    flex: 1,paddingHorizontal: 12,
+    flex: 1,
+    paddingHorizontal: 12,
   },
   name: {
-    color: '#050431',
-    fontFamily:"quicksand-bold",
-    fontSize: 18
+    color: "#050431",
+    fontFamily: "quicksand-bold",
+    fontSize: 18,
   },
   phone: {
-    color: '#050431',
-    fontFamily:"quicksand-light",
-    fontSize: 14
+    color: "#050431",
+    fontFamily: "quicksand-light",
+    fontSize: 14,
   },
 });

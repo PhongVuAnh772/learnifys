@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 import DropdownPicker from "../common/DropdownPicker";
+import { commonEnum } from "@/enum/keymap";
 
 interface Props {
   name: string;
@@ -20,10 +21,26 @@ const ChoosingAgency: React.FC<Props> = ({ name, counting }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items] = useState([
-    { label: i18n.t("student"), value: "student", key: "student" },
-    { label: i18n.t("admin"), value: "admin", key: "admin" },
-    { label: i18n.t("parent"), value: "parent", key: "parent" },
-    { label: i18n.t("teacher"), value: "teacher", key: "teacher" },
+    {
+      label: i18n.t("student"),
+      value: commonEnum.roleId.STUDENT,
+      key: commonEnum.roleId.STUDENT,
+    },
+    {
+      label: i18n.t("admin"),
+      value: commonEnum.roleId.ADMIN,
+      key: commonEnum.roleId.ADMIN,
+    },
+    {
+      label: i18n.t("parent"),
+      value: commonEnum.roleId.PARENTS,
+      key: commonEnum.roleId.PARENTS,
+    },
+    {
+      label: i18n.t("teacher"),
+      value: commonEnum.roleId.TEACHER,
+      key: commonEnum.roleId.TEACHER,
+    },
   ]);
   const [loading, setLoading] = useState(false);
   const handleEnterPress = async () => {};

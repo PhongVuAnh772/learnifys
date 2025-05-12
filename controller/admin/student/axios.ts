@@ -35,7 +35,7 @@ export const createNewClass = (data: any) =>
 export const updateClass = (id: number, data: any) =>
   axiosInstance.put(`/update-class`, { id, ...data });
 export const deleteOneClass = (id: number) =>
-  axiosInstance.delete(`/delete-one-class`, { data: { id } });
+  axiosInstance.delete(`/delete-one-class?classId=${id}`);
 export const fetchAllQuestions = () => axiosInstance.get("/get-all-question");
 export const createOneQuestion = (data: any) =>
   axiosInstance.post("/create-one-question", data);
@@ -48,3 +48,5 @@ export const searchClassByName = (name: string) =>
   axiosInstance.get(`/search-class-by-name`, { params: { name } });
 export const getQuestionsTeacher = () =>
   axiosInstance.get("/get-question-tearcher");
+
+export default axiosInstance;

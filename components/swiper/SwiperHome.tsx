@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 200,
     alignItems: "center",
-    marginTop: "10%",
+    marginTop: "4%",
   },
   wrapper: {},
   slide: {

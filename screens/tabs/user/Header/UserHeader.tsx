@@ -22,6 +22,7 @@ import ActionRow from "@/components/action-header/ActionRow";
 import SearchBar from "@/components/Search/SearchBar";
 import { storage } from "@/mmkv";
 import { useAuth } from "@/auth/ctx";
+import { commonEnum } from "@/enum/keymap";
 
 interface Props {
   name: string;
@@ -29,40 +30,40 @@ interface Props {
   avatar_url: string;
 }
 
-const UserHeader = ({ name, email,avatar_url }: Props) => {
-  const {role} = useAuth();
+const UserHeader = ({ name, email, avatar_url }: Props) => {
+  const { user } = useAuth();
   const getRoleString = () => {
-    if (role === "student") {
-          return i18n.t('student')
-        } else if (role === "teacher") {
-          return i18n.t('teacher')
-        } else if (role === "admin") {
-          return i18n.t('admin') 
-        } else if (role === "parent") {
-          return i18n.t('parent')
-        }
-  }
+    if (user?.roleId === commonEnum.roleId.STUDENT) {
+      return i18n.t("student");
+    } else if (user?.roleId === commonEnum.roleId.TEACHER) {
+      return i18n.t("teacher");
+    } else if (user?.roleId === commonEnum.roleId.ADMIN) {
+      return i18n.t("admin");
+    } else if (user?.roleId === commonEnum.roleId.PARENTS) {
+      return i18n.t("parent");
+    }
+  };
   return (
     <ImageBackground
       style={styles.container}
       source={background}
-      imageStyle={{ borderRadius: 15}}
+      imageStyle={{ borderRadius: 15 }}
     >
-        <View style={styles.actionRow}>
-            <Image
-              source={{
-                uri: avatar_url,
-              }}
-              style={styles.avatar}
-            />
-            <View style={styles.textContainer}>
-              <Text style={styles.name}>{name}</Text>
-              <Text style={styles.companyName}>{`Chức vụ : ${getRoleString()}`}</Text>
-              <Text style={styles.phone}>{email}</Text>
-            </View>
-          
+      <View style={styles.actionRow}>
+        <Image
+          source={{
+            uri: avatar_url,
+          }}
+          style={styles.avatar}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.name}>{name}</Text>
+          <Text
+            style={styles.companyName}
+          >{`Chức vụ : ${getRoleString()}`}</Text>
+          <Text style={styles.phone}>{email}</Text>
         </View>
-        
+      </View>
     </ImageBackground>
   );
 };
@@ -78,9 +79,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 24,
     flex: 1,
-    
   },
-  
+
   filterBtn: {
     width: 45,
     height: 45,
@@ -93,13 +93,13 @@ const styles = StyleSheet.create({
   },
   companyName: {
     fontFamily: "quicksand-medium",
-    color:'white',
-    fontSize: 18
+    color: "white",
+    fontSize: 18,
   },
   phone: {
     fontFamily: "quicksand-light",
-    color:'white',
-    fontSize: 18
+    color: "white",
+    fontSize: 18,
   },
   avatar: {
     width: 100,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingTop: 20,
-    gap: 10
+    gap: 10,
   },
   greeting: {
     fontFamily: "quicksand-light",

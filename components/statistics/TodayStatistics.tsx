@@ -1,65 +1,67 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, {useEffect} from "react";
-import { Image, ImageBackground } from "expo-image";
+import React from "react";
+import { ImageBackground } from "expo-image";
 import { blurhash } from "@/constants/BlurHash";
-import agencyOrderIcon from "@/assets/card/agency-order.png";
-import newCustomerIcon from "@/assets/card/new-customer.png";
-import retailOrderIcon from "@/assets/card/retail-order.png";
-import revenueIcon from "@/assets/card/revenue.png";
-import i18n from "@/translations";
-import { useTranslation } from "react-i18next";
+import classIcon from "@/assets/card/retail-order.png";
+import examIcon from "@/assets/card/agency-order.png";
+import documentIcon from "@/assets/card/new-customer.png";
+import missionIcon from "@/assets/card/revenue.png";
 
-const TodayStatistics = () => {
-   
+const TodayStatistics = ({ stats }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.titleMain}>{i18n.t("today-statistical")}</Text>
+      <Text style={styles.titleMain}>Tổng quan hôm nay</Text>
       <View style={styles.statisticContainer}>
         <ImageBackground
-          source={retailOrderIcon}
+          source={classIcon}
           style={styles.image}
-          alt=""
           placeholder={{ blurhash }}
           contentFit="fill"
           transition={1000}
         >
-          <Text style={styles.title}>{i18n.t("retailOrder")}</Text>
-          <Text style={styles.number}>12</Text>
+          <Text style={styles.title}>Lớp tham gia</Text>
+          <Text style={styles.number}>{stats?.classes ?? 0}</Text>
         </ImageBackground>
+
         <ImageBackground
-          source={agencyOrderIcon}
+          source={examIcon}
           style={styles.image}
-          alt=""
           placeholder={{ blurhash }}
           contentFit="fill"
           transition={1000}
         >
-          <Text style={styles.title}>{i18n.t("agencyOrder")}</Text>
-          <Text style={styles.number}>12</Text>
+          <Text style={styles.title}>Bài kiểm tra</Text>
+          <Text style={styles.number}>{stats?.exams ?? 0}</Text>
         </ImageBackground>
       </View>
+
       <View style={[styles.statisticContainer, { paddingTop: 15 }]}>
         <ImageBackground
-          source={newCustomerIcon}
+          source={documentIcon}
           style={styles.image}
-          alt=""
           placeholder={{ blurhash }}
           contentFit="fill"
           transition={1000}
         >
-          <Text style={[styles.title, {color:'black'}]}>{i18n.t("newCustomer")}</Text>
-          <Text style={[styles.number, {color:'black'}]}>12</Text>
+          <Text style={[styles.title, { color: "black" }]}>Tài liệu</Text>
+          <Text style={[styles.number, { color: "black" }]}>
+            {stats?.documents ?? 0}
+          </Text>
         </ImageBackground>
+
         <ImageBackground
-          source={revenueIcon}
+          source={missionIcon}
           style={styles.image}
-          alt=""
           placeholder={{ blurhash }}
           contentFit="fill"
           transition={1000}
         >
-          <Text style={[styles.title, {color:'black'}]}>{i18n.t("revenue")}</Text>
-          <Text style={[styles.number, {color:'black'}]}>12</Text>
+          <Text style={[styles.title, { color: "black" }]}>
+            Nhiệm vụ hôm nay
+          </Text>
+          <Text style={[styles.number, { color: "black" }]}>
+            {stats?.missions ?? 0}
+          </Text>
         </ImageBackground>
       </View>
     </View>
@@ -81,26 +83,24 @@ const styles = StyleSheet.create({
   },
   statisticContainer: {
     flexDirection: "row",
-    width: "100%",
     justifyContent: "space-between",
-    paddingTop: 15
+    width: "100%",
+    paddingTop: 15,
   },
   title: {
     fontFamily: "quicksand-bold",
-        color:'white',
-        fontSize: 15
-
+    fontSize: 15,
+    color: "white",
   },
   number: {
-    color:'white',
     fontSize: 25,
     fontWeight: "700",
-        fontFamily: "quicksand-bold",
-
+    fontFamily: "quicksand-bold",
+    color: "white",
   },
   titleMain: {
-    fontWeight: '700',
-    fontFamily:'quicksand-bold',
-    fontSize: 18
-  }
+    fontWeight: "700",
+    fontFamily: "quicksand-bold",
+    fontSize: 18,
+  },
 });

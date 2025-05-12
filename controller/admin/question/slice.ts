@@ -1,19 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../student/axios";
 
-// Định nghĩa kiểu dữ liệu cho câu hỏi
-interface Question {
+// ------------------------ Interfaces ------------------------
+export interface Question {
   id: number;
-  questionText: string;
-  correctAnswer: string;
+  questionPrompt: string;
+  answer: string;
   options: string[];
-}
-
-// Định nghĩa trạng thái của slice
-interface QuestionState {
-  questions: Question[];
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
 }
 
 export interface ExamItem {
@@ -25,58 +18,73 @@ export interface ExamItem {
   questions: Question[];
 }
 
-// Trạng thái ban đầu
+interface QuestionState {
+  questions: Question[];
+  exams: ExamItem | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+}
+
+// ------------------------ Initial State ------------------------
 const initialState: QuestionState = {
   questions: [],
+  exams: null,
   status: "idle",
   error: null,
 };
 
-// Hàm async để fetch tất cả các câu hỏi
+// ------------------------ Thunks ------------------------
+
+// GET /get-all-question
 export const fetchAllQuestions = createAsyncThunk(
   "question/fetchAllQuestions",
   async () => {
-    const response = await axios.get("https://your-api.com/questions");
-    return response.data;
+    const response = await axiosInstance.get("/get-all-question");
+    if (response.data.result) {
+      return response.data.data;
+    }
+    return [];
   }
 );
 
-// Hàm async để xóa một câu hỏi
 export const deleteOneQuestion = createAsyncThunk(
   "question/deleteOneQuestion",
   async (id: number) => {
-    await axios.delete(`https://your-api.com/questions/${id}`);
+    await axiosInstance.delete("/delete-one-question", {
+      params: { questionId: id },
+    });
     return id;
   }
 );
 
+// GET /get-exam-by-id?examId=...
 export const fetchExamById = createAsyncThunk(
-  "exam/fetchExamById",
+  "question/fetchExamById",
   async (id: number) => {
-    const response = await axios.get(`https://your-api.com/exams/${id}`);
-    return response.data;
+    const response = await axiosInstance.get("/get-exam-by-id", {
+      params: { examId: id },
+    });
+    return response.data.data;
   }
 );
 
-// Thực hiện cập nhật bài thi
+// PUT /update-one-exam
 export const updateExam = createAsyncThunk(
-  "exam/updateExam",
+  "question/updateExam",
   async (exam: ExamItem) => {
-    const response = await axios.put(
-      `https://your-api.com/exams/${exam.id}`,
-      exam
-    );
-    return response.data;
+    const response = await axiosInstance.put("/update-one-exam", exam);
+    return response.data.data;
   }
 );
 
-// Tạo slice cho câu hỏi
+// ------------------------ Slice ------------------------
 const questionSlice = createSlice({
   name: "question",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch all questions
       .addCase(fetchAllQuestions.pending, (state) => {
         state.status = "loading";
       })
@@ -86,15 +94,41 @@ const questionSlice = createSlice({
       })
       .addCase(fetchAllQuestions.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message || "Something went wrong";
+        state.error = action.error.message || "Failed to fetch questions";
       })
+
+      // Delete one question
       .addCase(deleteOneQuestion.fulfilled, (state, action) => {
         state.questions = state.questions.filter(
           (question) => question.id !== action.payload
         );
+      })
+
+      // Fetch exam by ID
+      .addCase(fetchExamById.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchExamById.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.exams = action.payload;
+      })
+      .addCase(fetchExamById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to fetch exam";
+      })
+
+      .addCase(updateExam.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateExam.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.exams = action.payload;
+      })
+      .addCase(updateExam.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to update exam";
       });
   },
 });
 
-// Export slice reducer để sử dụng trong store
 export default questionSlice.reducer;

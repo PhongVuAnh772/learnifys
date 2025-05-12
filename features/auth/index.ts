@@ -46,11 +46,9 @@ export const useAuthViewModel = (
   redirectTo: any
 ) => {
   const [confirm, setConfirm] = useState(null);
-  const [loginEmail, setLoginEmail] = useState("Vuanhphong2209@gmail.com");
+  const [loginEmail, setLoginEmail] = useState("phongadmin@gmail.com");
   const [loginPassword, setLoginPassword] = useState("22092002");
-  const [registerEmail, setRegisterEmail] = useState(
-    "Vuanhphong2209@gmail.com"
-  );
+  const [registerEmail, setRegisterEmail] = useState("phongstudent1@gmail.com");
   const [registerPassword, setRegisterPassword] = useState("22092002");
 
   const loginWithBackendOAuth = async (email: string) => {
@@ -106,7 +104,22 @@ export const useAuthViewModel = (
         await AsyncStorage.setItem("userData", JSON.stringify(result));
 
         console.log("Backend login success", result.data);
-        router.replace("(admin)");
+        switch (result.data.roleId) {
+          case commonEnum.roleId.STUDENT:
+            router.replace("/(student)/(tabs)");
+            break;
+          case commonEnum.roleId.TEACHER:
+            router.replace("/(teacher)/(tabs)");
+            break;
+          case commonEnum.roleId.ADMIN:
+            router.replace("/(admin)");
+            break;
+          case commonEnum.roleId.PARENTS:
+            router.replace("/(parents)/(tabs)");
+            break;
+          default:
+            router.replace("/choosing");
+        }
       } else {
         Toast.show({
           type: "error",
@@ -150,44 +163,45 @@ export const useAuthViewModel = (
   };
 
   async function signUpWithCommonAuth() {
-    showLoadingContent();
+    const role = storage.getString("role") as string;
+
+    const profileData = {
+      email: registerEmail,
+      password: registerPassword,
+      roleId: role,
+      language: "vi",
+    };
+
     try {
       const response = await fetch("http://127.0.0.1:5000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: registerEmail,
-          password: registerPassword,
-          roleId: commonEnum.roleId.ADMIN,
-          language: "vi",
-        }),
+        body: JSON.stringify(profileData),
       });
 
-      const result = await response.json();
-      hideLoadingContent();
-
-      if (result?.result) {
-        Toast.show({
-          type: "success",
-          text1: "Đăng ký thành công! Vui lòng đăng nhập lại",
-        });
-        console.log("Backend login success", result.data);
-        router.back();
-      } else {
-        Toast.show({
-          type: "error",
-          text1: result?.messageVI || "Đăng nhập thất bại!",
-        });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Server error:", errorData);
+        return;
       }
-    } catch (error) {
-      hideLoadingContent();
-      console.error("Backend login error:", error);
+
       Toast.show({
-        type: "error",
-        text1: "Có lỗi xảy ra!",
+        type: "success",
+        text1: "Đăng ký thành công! Vui lòng nhập thêm thông tin",
       });
+      router.push({
+        pathname: "/(modals)/register-info",
+        params: {
+          registerEmail,
+          registerPassword,
+          roleId: role,
+        },
+      });
+      // router.replace("/(modals)/login");
+    } catch (error) {
+      console.error("Submit error:", error);
     }
   }
 

@@ -11,7 +11,6 @@ export default function Layout() {
       }}
     >
       <Drawer.Screen name="(admin)" options={{ title: "Admin" }} />
-      {/* Bạn có thể thêm nhiều Drawer.Screen nếu muốn chia phần rõ hơn */}
     </Drawer>
   );
 }

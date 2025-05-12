@@ -37,17 +37,6 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="explore"
-        options={{
-          tabBarLabel: i18n.t("study-and-work"),
-          tabBarIcon: ({ size, color, focused }) => (
-            <OrderIcon size={size} color={color} focused={focused} />
-          ),
-          headerShown: false,
-        }}
-        
-      />
-      <Tabs.Screen
         name="message"
         options={{
           tabBarLabel: i18n.t("zoom-title"),

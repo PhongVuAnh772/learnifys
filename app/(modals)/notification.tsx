@@ -1,58 +1,34 @@
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { useEffect, useState } from "react";
-import i18n from "@/translations";
-import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { defaultStyles } from "@/constants/Styles";
-import AskingSignUp from "@/components/asking/AskingSignUp";
-import approveNotifyIcon from "@/assets/stickers/approve-notify.png";
-import addNotifyIcon from "@/assets/stickers/add-notify.png";
-import cartNotifyIcon from "@/assets/stickers/cart-notify.png";
-import checkinNotifyIcon from "@/assets/stickers/checkin-notify.png";
-import signupNotifyIcon from "@/assets/stickers/signup-notify.png";
 import { Image } from "expo-image";
 import { blurhash } from "@/constants/BlurHash";
 import { FlashList } from "@shopify/flash-list";
-import { Facebook } from "react-content-loader";
-const data = [
-  {
-    title: "",
-    type: "checkin",
-  },
-  {
-    title: "",
-    type: "add-customer",
-  },
-  {
-    title: "",
-    type: "approve",
-  },
-  {
-    title: "",
-    type: "sign-up",
-  },
-  {
-    title: "",
-    type: "cart",
-  },
-];
+import axiosInstance from "@/controller/admin/student/axios";
+import Toast from "react-native-toast-message";
+import addNotifyIcon from "@/assets/stickers/add-notify.png";
+import approveNotifyIcon from "@/assets/stickers/approve-notify.png";
+import cartNotifyIcon from "@/assets/stickers/cart-notify.png";
+import checkinNotifyIcon from "@/assets/stickers/checkin-notify.png";
+import signupNotifyIcon from "@/assets/stickers/signup-notify.png";
 
-
+const typeToIcon: any = {
+  checkin: checkinNotifyIcon,
+  "add-customer": addNotifyIcon,
+  approve: approveNotifyIcon,
+  "sign-up": signupNotifyIcon,
+  cart: cartNotifyIcon,
+};
 
 const RenderItem = ({ item }: any) => (
   <View style={styles.contentNotify}>
     <View style={styles.overview}>
       <View style={styles.iconContainer}>
         <Image
-          source={addNotifyIcon}
+          source={typeToIcon[item.type] || addNotifyIcon}
           alt=""
           style={styles.icon}
           placeholder={{ blurhash }}
@@ -61,43 +37,44 @@ const RenderItem = ({ item }: any) => (
         />
       </View>
       <View style={styles.titleContainer}>
-        <Text style={styles.time}>16:26 25/05/2024</Text>
-        <Text style={styles.title}>25 người đăng ký sự kiện</Text>
-
+        <Text style={styles.time}>{item.createdAt}</Text>
+        <Text style={styles.title}>{item.title}</Text>
       </View>
       <View style={styles.dot}></View>
     </View>
     <Text style={styles.description} numberOfLines={2}>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-      aliquip ex ea commodo consequat. Duis aute irure dolor in
-      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-      culpa qui officia deserunt mollit anim id est laborum.
+      {item.content}
     </Text>
   </View>
-)
+);
 
 const Notifications = () => {
-  const [dataNotifications, setDataNotifications] = useState<any>([])
-  useWarmUpBrowser();
+  const [dataNotifications, setDataNotifications] = useState<any>([]);
   const router = useRouter();
+
   useEffect(() => {
     const getData = async () => {
-
-    }
-    getData()
-  }, [])
+      try {
+        const res = await axiosInstance.get("/get-list-notify");
+        setDataNotifications(res.data?.data || []);
+      } catch (error) {
+        console.error("Error fetching notifications", error);
+        Toast.show({
+          type: "error",
+          text1: "Không thể tải thông báo",
+        });
+      }
+    };
+    getData();
+  }, []);
 
   return (
     <View style={styles.container}>
       <FlashList
-        data={data}
+        data={dataNotifications}
         renderItem={({ item }) => <RenderItem item={item} />}
         estimatedItemSize={200}
         showsVerticalScrollIndicator={false}
-      // ListEmptyComponent={() => <Facebook />}
       />
     </View>
   );
@@ -116,18 +93,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
-    gap: 10
+    gap: 10,
   },
   contentNotify: {
-    height: 128,
     backgroundColor: "white",
     flex: 1,
     padding: 16,
     gap: 12,
     borderRadius: 12,
-    marginTop: 15
+    marginTop: 15,
   },
-
   description: {
     fontSize: 14,
     lineHeight: 19.6,
@@ -154,16 +129,15 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1,
     gap: 5,
-
   },
   time: {
     fontSize: 14,
     lineHeight: 19.6,
-    fontFamily: 'quicksand-light'
+    fontFamily: "quicksand-light",
   },
   title: {
-    fontFamily: 'quicksand-bold',
+    fontFamily: "quicksand-bold",
     fontSize: 16,
-    lineHeight: 22.4
-  }
+    lineHeight: 22.4,
+  },
 });

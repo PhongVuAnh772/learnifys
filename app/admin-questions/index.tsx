@@ -18,11 +18,23 @@ import {
   fetchAllQuestions,
 } from "@/controller/admin/question/slice";
 
+interface OptionItem {
+  option: string;
+  isCorrect: boolean;
+}
+
 interface QuestionItem {
   id: number;
-  questionText: string;
-  correctAnswer: string;
+  questionPrompt: string;
+  answer: string;
   options: string[];
+}
+
+interface Question {
+  id: number;
+  questionPrompt: string;
+  answer: string;
+  options: string[]; // array of JSON strings
 }
 
 export default function AdminQuestionScreen() {
@@ -38,22 +50,28 @@ export default function AdminQuestionScreen() {
     dispatch(fetchAllQuestions());
   }, [dispatch]);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     Alert.alert("Xác nhận", "Bạn có chắc muốn xóa câu hỏi này?", [
-      { text: "Hủy" },
+      { text: "Hủy", style: "cancel" },
       {
         text: "Xóa",
         style: "destructive",
-        onPress: () => {
-          dispatch(deleteOneQuestion(id));
+        onPress: async () => {
+          try {
+            await dispatch(deleteOneQuestion(id)).unwrap();
+            Alert.alert("Thành công", "Đã xóa câu hỏi.");
+          } catch (err: any) {
+            Alert.alert("Lỗi", err.message || "Không thể xóa câu hỏi.");
+          }
         },
       },
     ]);
   };
 
-  const filtered = questions.filter((question: QuestionItem) =>
-    question.questionText.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered: any[] =
+    questions?.filter((question: any) =>
+      question.questionPrompt.toLowerCase().includes(search.toLowerCase())
+    ) || [];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -100,45 +118,67 @@ export default function AdminQuestionScreen() {
                 Không tìm thấy câu hỏi nào.
               </Text>
             }
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#eee",
-                  padding: 16,
-                  borderRadius: 12,
-                  marginBottom: 12,
-                  backgroundColor: "#f9f9f9",
-                }}
-              >
-                <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                  {item.questionText}
-                </Text>
-                <Text style={{ color: "#666", marginTop: 4 }}>
-                  Đáp án đúng: {item.correctAnswer}
-                </Text>
-
+            renderItem={({ item }) => {
+              const parsedOptions: OptionItem[] = item.options.map((optStr) =>
+                JSON.parse(optStr)
+              );
+              return (
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                    gap: 16,
-                    marginTop: 12,
+                    borderWidth: 1,
+                    borderColor: "#eee",
+                    padding: 16,
+                    borderRadius: 12,
+                    marginBottom: 12,
+                    backgroundColor: "#f9f9f9",
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={() =>
-                      router.push(`/admin-question-edit/${item.id}`)
-                    }
+                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                    {item.questionPrompt}
+                  </Text>
+
+                  {parsedOptions.map((opt, idx) => (
+                    <Text
+                      key={idx}
+                      style={{
+                        marginTop: 4,
+                        color: opt.isCorrect ? "green" : "#333",
+                        fontWeight: opt.isCorrect ? "bold" : "normal",
+                      }}
+                    >
+                      - {opt.option} {opt.isCorrect ? "(Đáp án đúng)" : ""}
+                    </Text>
+                  ))}
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-end",
+                      gap: 16,
+                      marginTop: 12,
+                    }}
                   >
-                    <Ionicons name="create-outline" size={22} color="#007AFF" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                    <Ionicons name="trash-outline" size={22} color="red" />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        router.push({
+                          pathname: "/admin-question-edit/[id]",
+                          params: { id: item.id.toString() },
+                        })
+                      }
+                    >
+                      <Ionicons
+                        name="create-outline"
+                        size={22}
+                        color="#007AFF"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                      <Ionicons name="trash-outline" size={22} color="red" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            )}
+              );
+            }}
           />
         )}
 

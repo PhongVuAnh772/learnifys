@@ -21,6 +21,7 @@ const chatServer = socketIO.of("/chat");
 const notifyServer = socketIO.of("/notify");
 
 let arrSocketsNotifyServer = [];
+let arrSocketActionLogs = [];
 
 notifyServer.use((socket, next) => {
   const token = socket.handshake.auth.token;
@@ -66,9 +67,34 @@ notifyServer.on("connection", (socket) => {
   });
 
   socket.on("send-request-join-class-to-teacher", ({ teacherId }) => {
-    arrSocketsNotifyServer.map((item) => {
+    console.log(arrSocketsNotifyServer, "arrSocketsNotifyServer");
+
+    const notify = {
+      _id: Date.now().toString(), // hoặc dùng uuid nếu cần
+      title: "Yêu cầu tham gia lớp học",
+      content: `Học sinh ID ${socket.userId} yêu cầu tham gia lớp`,
+      type: "join-class",
+      senderId: socket.userId,
+      receiverId: teacherId,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Ghi log
+    arrSocketActionLogs.push({
+      type: "JOIN_CLASS_REQUEST",
+      fromUser: socket.userId,
+      toUser: teacherId,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Ghi notify
+    arrSocketActionLogs.push(notify);
+
+    // Gửi notify cho giáo viên
+    arrSocketsNotifyServer.forEach((item) => {
       if (item.userId === teacherId) {
         notifyServer.to(item.id).emit("update-notification");
+        notifyServer.to(item.id).emit("new-notify", notify);
       }
     });
   });
@@ -180,6 +206,12 @@ chatServer.on("connection", (socket) => {
 });
 
 connectDB();
+
+app.get("/debug/get-logs-by-user", (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) return res.status(400).json({ message: "Missing userId" });
+  res.json(arrSocketActionLogs);
+});
 
 app.use(express.static("public"));
 app.use(express.json({ limit: "50mb" }));

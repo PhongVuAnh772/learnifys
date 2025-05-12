@@ -20,7 +20,6 @@ const ActionForUser = () => {
   const { show, hide } = useLoadingOverlay();
   const { signOut, session } = useAuth();
   const [isSwitchOnLocation, setIsSwitchOnLocation] = React.useState(false);
-  console.log(session);
   const onToggleSwitchLocation = () =>
     setIsSwitchOnLocation(!isSwitchOnLocation);
   const handleLogout = async () => {

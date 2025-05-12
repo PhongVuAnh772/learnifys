@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Question extends Model {
     /**
@@ -11,24 +9,41 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Question.hasMany(models.Exam_Question, { foreignKey: "questionId", as: "examQuestionData" })
-      Question.hasMany(models.Result_Exam, { foreignKey: "questionId", as: "questionOfResultExamData" })
-      Question.belongsTo(models.User, { foreignKey: "teacherId",targetKey: "id", as: 'teacherOfQuestionData' })
-
+      Question.hasMany(models.Exam_Question, {
+        foreignKey: "questionId",
+        as: "examQuestionData",
+      });
+      Question.hasMany(models.Result_Exam, {
+        foreignKey: "questionId",
+        as: "questionOfResultExamData",
+      });
+      Question.belongsTo(models.User, {
+        foreignKey: "teacherId",
+        targetKey: "id",
+        as: "teacherOfQuestionData",
+      });
+      Question.belongsToMany(models.Exam, {
+        through: models.Exam_Question,
+        foreignKey: "questionId",
+        otherKey: "examId",
+        as: "examsOfQuestionData",
+      });
     }
   }
-  Question.init({
-    teacherId: DataTypes.INTEGER,
-    questionPrompt: DataTypes.STRING,
-    options: DataTypes.ARRAY(DataTypes.STRING),
-    answer: DataTypes.STRING,
-    typeId: DataTypes.STRING,
-    level: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Question',
-    freezeTableName: true
-
-  });
+  Question.init(
+    {
+      teacherId: DataTypes.INTEGER,
+      questionPrompt: DataTypes.STRING,
+      options: DataTypes.ARRAY(DataTypes.STRING),
+      answer: DataTypes.STRING,
+      typeId: DataTypes.STRING,
+      level: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "Question",
+      freezeTableName: true,
+    }
+  );
   return Question;
 };

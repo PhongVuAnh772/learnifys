@@ -102,7 +102,7 @@ export default function RootLayout() {
                       <ToastProvider>
                         <PaperProvider>
                           {Platform.OS === "ios" && (
-                            <StatusBar barStyle="light-content" />
+                            <StatusBar barStyle="dark-content" />
                           )}
                           {Platform.OS === "android" && (
                             <StatusBar barStyle="light-content" />
@@ -177,6 +177,14 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
+        name="(modals)/register-info"
+        options={{
+          animation: "slide_from_right",
+          title: i18n.t("login-title"),
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="(modals)/login"
         options={{
           title: i18n.t("login-title"),
@@ -214,6 +222,35 @@ function RootLayoutNav() {
       />
       <Stack.Screen
         name="(modals)/notification"
+        options={{
+          presentation: "modal",
+          title: i18n.t("notifications"),
+          headerTitleStyle: {
+            fontFamily: "quicksand-bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={styles.button}
+            >
+              <Entypo name="chevron-small-left" size={28} color="black" />
+            </TouchableOpacity>
+          ),
+          headerStyle: {
+            backgroundColor: "rgb(241, 243, 244)",
+          },
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={styles.buttonNotification}
+            >
+              <Ionicons name="checkmark-done" size={28} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="(modals)/notification-teacher"
         options={{
           presentation: "modal",
           title: i18n.t("notifications"),

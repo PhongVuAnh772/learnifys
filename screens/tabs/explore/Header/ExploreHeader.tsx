@@ -78,12 +78,17 @@ const ExploreHeader: React.FC<Props> = ({ avatar_url, name, counting }) => {
           <View style={styles.itemRow}>
             <SearchBar
               color="#F5F5F5"
-              placeholder={i18n.t("dealer-lookup")}
-              handleEnterPress={handleEnterPress}
+              placeholder="Tìm kiếm lớp hoặc giáo viên"
+              handleEnterPress={() =>
+                router.push({
+                  pathname: "(modals)/searching" as any,
+                  params: { keyword: searchValue },
+                })
+              }
               value={searchValue}
               setValue={setSearchValue}
-              keyboardType="phone-pad"
-              maxLength={10}
+              keyboardType="default"
+              maxLength={50}
               icon={searchIcon}
             />
           </View>

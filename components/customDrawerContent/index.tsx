@@ -5,6 +5,7 @@ import { View, Text, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CustomDrawerContent(props: any) {
   const insets = useSafeAreaInsets();
@@ -70,9 +71,13 @@ export default function CustomDrawerContent(props: any) {
 
       {/* Footer Logout Button */}
       <Pressable
-        onPress={() => {
-          console.log("Logout");
-          // TODO: Add real logout logic here (e.g., clear token, redirect)
+        onPress={async () => {
+          try {
+            await AsyncStorage.clear();
+            router.replace("/login");
+          } catch (error) {
+            console.error("Error clearing AsyncStorage:", error);
+          }
         }}
         style={{
           paddingHorizontal: 20,
