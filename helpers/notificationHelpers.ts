@@ -1,16 +1,19 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import messaging, {
   FirebaseMessagingTypes,
 } from "@react-native-firebase/messaging";
-import {useAppDispatch, useAppSelector} from "@/redux/store";
-import {setDeviceToken} from "@/redux/actions/app.action";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { setDeviceToken } from "@/redux/actions/app.action";
 import useAuth from "@/hooks/useAuth";
-import {PermissionsAndroid, Platform} from "react-native";
-import notifee, {AndroidImportance, EventType, Event} from '@notifee/react-native'
-import {useNavigation} from "@react-navigation/native";
+import { PermissionsAndroid, Platform } from "react-native";
+import notifee, { AndroidImportance, EventType, Event } from '@notifee/react-native'
+import { useNavigation } from "@react-navigation/native";
 
 export const getDeviceToken = async () => {
   const authorizationStatus = await messaging().requestPermission();
+  const authorizationStatus11 = await messaging().requestPermission();
+  const authorizationStatus2 = await messaging().requestPermission();
+
   if (authorizationStatus) {
     if (messaging().isDeviceRegisteredForRemoteMessages) {
       try {
@@ -34,8 +37,8 @@ export const getDeviceToken = async () => {
 
 export const NotificationHelper = () => {
   const dispatch = useAppDispatch();
-  const {loggedIn} = useAuth();
-  const {deviceToken} = useAppSelector(state => state.app);
+  const { loggedIn } = useAuth();
+  const { deviceToken } = useAppSelector(state => state.app);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -86,12 +89,12 @@ export const NotificationHelper = () => {
 export const handleDisplayNotification = async (
   message:
     | {
-    notification: {
-      title?: string;
-      body?: string;
-    };
-    data?: any;
-  }
+      notification: {
+        title?: string;
+        body?: string;
+      };
+      data?: any;
+    }
     | FirebaseMessagingTypes.RemoteMessage,
 ) => {
   const channelId = await notifee.createChannel({
